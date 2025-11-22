@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Emergency Safety</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #FEF2F2; user-select: none; overflow: hidden; }
+        .touch-target { cursor: pointer; transition: transform 0.1s; }
+        .touch-target:active { transform: scale(0.95); }
+        .keypad-btn { background: white; border-radius: 50%; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5E7EB; }
+        .keypad-btn:active { background: #E5E7EB; }
+        @keyframes flashRedBlue { 0% { background-color: #EF4444; } 50% { background-color: #3B82F6; } 100% { background-color: #EF4444; } }
+        .siren-anim { animation: flashRedBlue 0.5s infinite; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake { animation: shake 0.3s; }
+    </style>
+</head>
+<body>
+
+<div id="app" class="relative h-screen w-full max-w-2xl mx-auto border-x-2 border-gray-200 bg-white shadow-2xl flex flex-col">
+    
+    <div class="p-4 flex justify-between items-center bg-white border-b border-gray-200 z-10">
+        <div class="bg-red-50 px-4 py-2 rounded-full border border-red-100 text-red-700 font-bold">🚨 Safety Class</div>
+        <div class="text-gray-500 font-bold" id="student-name-display">Student</div>
+    </div>
+
+    <div id="screen-situation" class="flex-1 flex flex-col items-center justify-center p-4 bg-red-50">
+        <div class="mb-8 relative"><div class="text-9xl">🏠</div><div class="absolute bottom-0 right-0 text-8xl animate-pulse">🔥</div></div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Oh no! Fire!</h1>
+        <button onclick="gotoHelperSelection()" class="bg-red-600 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg hover:bg-red-700 border-b-4 border-red-900">Call for Help 📞</button>
+        <br>
+        <a href="index.html" class="mt-8 text-gray-400 font-bold text-sm">⬅ Exit Class</a>
+    </div>
+
+    <div id="screen-helper" class="hidden flex-1 flex flex-col bg-white">
+        <div class="p-8 text-center"><h2 class="text-2xl font-bold text-gray-800">Who puts out fire?</h2></div>
+        <div class="flex-1 grid grid-cols-1 gap-6 p-8 items-center justify-items-center">
+            <div onclick="handleWrongHelper(this)" class="touch-target w-full max-w-xs bg-blue-50 border-4 border-blue-100 rounded-2xl p-6 flex items-center gap-6 shadow-sm"><div class="text-6xl">📮</div><div class="text-left"><span class="block text-xl font-bold text-gray-700">Postman</span></div></div>
+            <div onclick="handleCorrectHelper()" class="touch-target w-full max-w-xs bg-red-50 border-4 border-red-200 rounded-2xl p-6 flex items-center gap-6 shadow-md"><div class="text-6xl">👨‍🚒</div><div class="text-left"><span class="block text-xl font-bold text-gray-700">Firefighter</span></div></div>
+        </div>
+    </div>
+
+    <div id="screen-dialpad" class="hidden flex-1 flex flex-col bg-gray-900 text-white relative">
+        <div class="h-1/3 flex flex-col items-center justify-center border-b border-gray-700 bg-gray-800">
+            <div class="text-gray-400 text-sm mb-2">Emergency Number</div>
+            <div id="phone-display" class="text-6xl font-mono tracking-widest text-green-400 h-20 flex items-center"><span class="opacity-20">---</span></div>
+            <div id="instruction-text" class="text-yellow-300 mt-4 animate-pulse">Dial 1 - 1 - 2</div>
+        </div>
+        <div class="flex-1 bg-gray-100 text-gray-800 p-6">
+            <div class="grid grid-cols-3 gap-4 max-w-xs mx-auto">
+                <button class="keypad-btn" onclick="pressKey('1')">1</button><button class="keypad-btn" onclick="pressKey('2')">2</button><button class="keypad-btn" onclick="pressKey('3')">3</button>
+                <button class="keypad-btn" onclick="pressKey('4')">4</button><button class="keypad-btn" onclick="pressKey('5')">5</button><button class="keypad-btn" onclick="pressKey('6')">6</button>
+                <button class="keypad-btn" onclick="pressKey('7')">7</button><button class="keypad-btn" onclick="pressKey('8')">8</button><button class="keypad-btn" onclick="pressKey('9')">9</button>
+                <div class="keypad-btn bg-transparent border-none"></div><button class="keypad-btn" onclick="pressKey('0')">0</button><button class="keypad-btn bg-red-100 text-red-600" onclick="clearDisplay()">⌫</button>
+            </div>
+        </div>
+        <div id="call-btn-container" class="absolute bottom-6 w-full flex justify-center hidden"><button onclick="makeCall()" class="bg-green-500 w-20 h-20 rounded-full flex items-center justify-center shadow-2xl animate-bounce text-4xl text-white">📞</button></div>
+    </div>
+
+    <div id="screen-success" class="hidden h-screen flex flex-col items-center justify-center text-white transition-colors duration-500 siren-anim">
+        <div class="text-9xl mb-4">🚒</div>
+        <h1 class="text-5xl font-bold text-center">Help is<br>Coming!</h1>
+        <button onclick="location.href='index.html'" class="mt-12 bg-white text-gray-800 font-bold py-4 px-10 rounded-full shadow-lg">Back to Menu 🏠</button>
+    </div>
+</div>
+
+<script>
+    let currentNumber = "";
+    let currentStudentName = "Guest";
+    let attemptsCount = 1;
+    const targetNumber = "112";
+
+    window.onload = function() {
+        const storedName = localStorage.getItem('saksham_student_name');
+        if (storedName) currentStudentName = storedName;
+        document.getElementById('student-name-display').innerText = currentStudentName;
+    };
+
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if(synth.speaking) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.9;
+        synth.speak(u);
+    }
+
+    function gotoHelperSelection() {
+        document.getElementById('screen-situation').classList.add('hidden');
+        document.getElementById('screen-helper').classList.remove('hidden');
+        speak("Who puts out the fire?");
+    }
+
+    function handleWrongHelper(el) {
+        el.classList.add('shake');
+        attemptsCount++;
+        setTimeout(() => el.classList.remove('shake'), 300);
+        speak("No. The Postman brings letters.");
+    }
+
+    function handleCorrectHelper() {
+        speak("Correct! Firefighter. Now, dial 1 1 2.");
+        document.getElementById('screen-helper').classList.add('hidden');
+        document.getElementById('screen-dialpad').classList.remove('hidden');
+    }
+
+    function pressKey(num) {
+        if (currentNumber.length < 3) {
+            currentNumber += num;
+            updateDisplay();
+            speak(num);
+            if (currentNumber === targetNumber) {
+                document.getElementById('instruction-text').innerText = "Good! Press Call.";
+                document.getElementById('call-btn-container').classList.remove('hidden');
+                speak("Good. Now press the green button.");
+            } else if (currentNumber.length === 3 && currentNumber !== targetNumber) {
+                attemptsCount++;
+                document.getElementById('phone-display').classList.add('shake');
+                speak("Wrong number. Try 1 1 2.");
+                setTimeout(() => { currentNumber = ""; updateDisplay(); document.getElementById('phone-display').classList.remove('shake'); }, 1000);
+            }
+        }
+    }
+
+    function clearDisplay() { currentNumber = ""; updateDisplay(); document.getElementById('call-btn-container').classList.add('hidden'); }
+    function updateDisplay() { document.getElementById('phone-display').innerText = currentNumber || "---"; document.getElementById('phone-display').classList.remove('opacity-20'); }
+
+    function makeCall() {
+        document.getElementById('screen-dialpad').classList.add('hidden');
+        document.getElementById('screen-success').classList.remove('hidden');
+        speak("Calling Emergency Services.");
+        sendDataToBackend();
+    }
+
+    function sendDataToBackend() {
+        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
+        
+        if (googleScriptURL.includes("script.google.com")) {
+            fetch(googleScriptURL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify({
+                    studentId: currentStudentName,
+                    module: "Safety: Emergency",
+                    level: "Dialing 112",
+                    score: 100,
+                    attempts: attemptsCount,
+                    timeTaken: 45
+                })
+            });
+        }
+    }
+</script>
+</body>
+</html>

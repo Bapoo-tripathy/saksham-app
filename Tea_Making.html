@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Making Tea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #FFF7ED; user-select: none; overflow: hidden; }
+        .touch-target { cursor: pointer; transition: transform 0.1s; }
+        .touch-target:active { transform: scale(0.9); }
+        @keyframes flicker { 0% { opacity: 0.8; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(1.1); } 100% { opacity: 0.8; transform: scaleY(1); } }
+        .flame { animation: flicker 0.2s infinite; }
+        @keyframes boil { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
+        .boiling { animation: boil 0.5s infinite; }
+        @keyframes flashRed { 0% { background-color: rgba(255, 0, 0, 0); } 50% { background-color: rgba(255, 0, 0, 0.5); } 100% { background-color: rgba(255, 0, 0, 0); } }
+        .hazard-anim { animation: flashRed 0.5s; }
+    </style>
+</head>
+<body>
+
+<div id="app" class="relative h-screen w-full max-w-2xl mx-auto border-x-2 border-gray-200 bg-white shadow-2xl">
+    
+    <div class="absolute top-0 w-full p-4 flex justify-between z-50">
+        <div class="bg-white px-4 py-2 rounded-full shadow border border-gray-200">
+            👨‍🍳 <span id="student-name-display">Chef Guest</span>
+        </div>
+        <button onclick="speak('Audio Test')" class="bg-blue-100 p-2 rounded-full">🔊</button>
+    </div>
+
+    <div id="screen-intro" class="h-full flex flex-col items-center justify-center p-8 bg-orange-50">
+        <div class="text-8xl mb-6">🫖</div>
+        <h1 class="text-4xl font-bold text-orange-600 mb-2">Let's Make Tea</h1>
+        <p class="text-xl text-gray-500 mb-8">Home Science Class 10</p>
+        <button onclick="startLevel1()" class="bg-green-500 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg hover:bg-green-600 border-b-4 border-green-700">Start Cooking ▶</button>
+        <br>
+        <a href="index.html" class="mt-8 text-gray-400 font-bold">⬅ Back to Menu</a>
+    </div>
+
+    <div id="screen-ingredients" class="hidden h-full flex flex-col bg-white">
+        <div class="mt-20 px-8 text-center"><h2 class="text-3xl font-bold text-gray-800">Pick items for <span class="text-orange-600">Tea</span></h2></div>
+        <div class="flex-1 grid grid-cols-2 gap-4 p-8 items-center">
+            <div onclick="selectIngredient(this, true)" class="touch-target bg-blue-50 border-4 border-blue-200 rounded-xl p-4 flex flex-col items-center h-40 justify-center"><div class="text-5xl">🥛</div><span class="mt-2 font-bold text-gray-600">Milk</span></div>
+            <div onclick="selectIngredient(this, false)" class="touch-target bg-pink-50 border-4 border-pink-200 rounded-xl p-4 flex flex-col items-center h-40 justify-center"><div class="text-5xl">🧼</div><span class="mt-2 font-bold text-gray-600">Soap</span></div>
+            <div onclick="selectIngredient(this, true)" class="touch-target bg-green-50 border-4 border-green-200 rounded-xl p-4 flex flex-col items-center h-40 justify-center"><div class="text-5xl">🌿</div><span class="mt-2 font-bold text-gray-600">Tea Leaves</span></div>
+            <div onclick="selectIngredient(this, false)" class="touch-target bg-red-50 border-4 border-red-200 rounded-xl p-4 flex flex-col items-center h-40 justify-center"><div class="text-5xl">⚽</div><span class="mt-2 font-bold text-gray-600">Ball</span></div>
+        </div>
+    </div>
+
+    <div id="screen-safety" class="hidden h-full flex flex-col bg-gray-100 relative">
+        <div id="safety-overlay" class="absolute inset-0 pointer-events-none z-50"></div>
+        <div class="mt-20 px-8 text-center"><h2 class="text-3xl font-bold text-red-600">Safety First!</h2><p class="text-xl">Touch the <span class="text-green-600 font-bold">Safe Handle</span></p></div>
+        <div class="flex-1 flex items-center justify-center">
+            <div class="relative w-64 h-64">
+                <div class="absolute bottom-0 left-10 w-40 h-20 bg-orange-400 blur-md opacity-50 flame"></div>
+                <div onclick="handleHotTouch()" class="absolute bottom-10 left-4 w-52 h-40 bg-gray-400 rounded-b-3xl border-4 border-gray-600 flex items-center justify-center cursor-pointer"><span class="text-4xl boiling">💧</span><span class="absolute -top-8 text-red-500 font-bold animate-pulse">HOT</span></div>
+                <div onclick="handleSafeTouch()" class="absolute bottom-20 -right-8 w-12 h-24 bg-black rounded-r-xl cursor-pointer border-4 border-gray-600 hover:bg-gray-800 transition-colors"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-sequence" class="hidden h-full flex flex-col bg-white">
+        <div class="mt-20 px-8 text-center"><h2 class="text-3xl font-bold text-gray-800">Let's Cook</h2></div>
+        <div class="h-64 flex items-center justify-center bg-gray-50 border-b-4 border-gray-200">
+            <div class="relative w-40 h-32 bg-gray-300 rounded-b-3xl border-4 border-gray-500 overflow-hidden"><div id="pot-liquid" class="absolute bottom-0 w-full h-0 bg-blue-300 transition-all duration-1000"></div></div>
+        </div>
+        <div class="flex-1 p-4 grid grid-cols-1 gap-4 overflow-y-auto">
+            <button id="btn-water" onclick="doStep('water')" class="touch-target bg-blue-100 p-4 rounded-xl flex items-center gap-4 border-2 border-blue-300"><span class="text-4xl">💧</span><span class="block font-bold text-lg">1. Pour Water</span></button>
+            <button id="btn-heat" onclick="doStep('heat')" class="touch-target bg-gray-100 p-4 rounded-xl flex items-center gap-4 border-2 border-gray-300 opacity-50 pointer-events-none"><span class="text-4xl">🔥</span><span class="block font-bold text-lg">2. Turn on Stove</span></button>
+            <button id="btn-leaves" onclick="doStep('leaves')" class="touch-target bg-gray-100 p-4 rounded-xl flex items-center gap-4 border-2 border-gray-300 opacity-50 pointer-events-none"><span class="text-4xl">🌿</span><span class="block font-bold text-lg">3. Add Tea Leaves</span></button>
+            <button id="btn-milk" onclick="doStep('milk')" class="touch-target bg-gray-100 p-4 rounded-xl flex items-center gap-4 border-2 border-gray-300 opacity-50 pointer-events-none"><span class="text-4xl">🥛</span><span class="block font-bold text-lg">4. Add Milk</span></button>
+        </div>
+    </div>
+
+    <div id="screen-success" class="hidden h-full flex flex-col items-center justify-center bg-green-600 text-white">
+        <div class="text-8xl mb-4">☕</div>
+        <h1 class="text-5xl font-bold">Tea is Ready!</h1>
+        <button onclick="location.href='index.html'" class="mt-12 bg-white text-green-700 font-bold py-3 px-8 rounded-full shadow-lg">Back to Menu 🏠</button>
+    </div>
+
+</div>
+
+<script>
+    let itemsCollected = 0;
+    let currentStep = 0;
+    let currentStudentName = "Guest";
+    let attemptsCount = 1;
+
+    window.onload = function() {
+        const storedName = localStorage.getItem('saksham_student_name');
+        if (storedName) currentStudentName = storedName;
+        document.getElementById('student-name-display').innerText = "Chef " + currentStudentName;
+    };
+
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if(synth.speaking) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.9;
+        synth.speak(u);
+    }
+
+    function startLevel1() {
+        document.getElementById('screen-intro').classList.add('hidden');
+        document.getElementById('screen-ingredients').classList.remove('hidden');
+        speak("Chef " + currentStudentName + ", pick the things we need for Tea.");
+    }
+
+    function selectIngredient(el, isCorrect) {
+        if (!isCorrect) {
+            el.style.opacity = "0.2";
+            attemptsCount++;
+            speak("No. We don't use that.");
+        } else {
+            if (el.style.borderColor === "green") return;
+            el.style.borderColor = "green";
+            el.style.backgroundColor = "#dcfce7";
+            itemsCollected++;
+            speak("Correct!");
+            if (itemsCollected === 2) {
+                setTimeout(() => {
+                    document.getElementById('screen-ingredients').classList.add('hidden');
+                    document.getElementById('screen-safety').classList.remove('hidden');
+                    speak("Be careful. The stove is hot. Touch the safe handle.");
+                }, 1000);
+            }
+        }
+    }
+
+    function handleHotTouch() {
+        const overlay = document.getElementById('safety-overlay');
+        overlay.classList.add('hazard-anim');
+        attemptsCount++;
+        setTimeout(() => overlay.classList.remove('hazard-anim'), 500);
+        speak("Stop! That is hot! Only touch the black handle.");
+    }
+
+    function handleSafeTouch() {
+        speak("Good job! Always hold the handle.");
+        setTimeout(() => {
+            document.getElementById('screen-safety').classList.add('hidden');
+            document.getElementById('screen-sequence').classList.remove('hidden');
+            speak("Now, let's make the tea step by step. First, pour water.");
+        }, 1500);
+    }
+
+    function doStep(stepName) {
+        const potLiquid = document.getElementById('pot-liquid');
+        if (stepName === 'water' && currentStep === 0) {
+            potLiquid.style.height = "50%"; potLiquid.classList.add('boiling');
+            enableNextButton('btn-heat'); speak("Water poured. Now turn on the heat."); currentStep++;
+        } else if (stepName === 'heat' && currentStep === 1) {
+            enableNextButton('btn-leaves'); speak("Heat is on. Add tea leaves."); currentStep++;
+        } else if (stepName === 'leaves' && currentStep === 2) {
+            potLiquid.style.backgroundColor = "#78350f"; enableNextButton('btn-milk'); speak("Look at the color change. Add milk."); currentStep++;
+        } else if (stepName === 'milk' && currentStep === 3) {
+            potLiquid.style.backgroundColor = "#d97706"; potLiquid.style.height = "80%";
+            speak("Perfect! The tea is ready.");
+            sendDataToBackend();
+            setTimeout(() => {
+                document.getElementById('screen-sequence').classList.add('hidden');
+                document.getElementById('screen-success').classList.remove('hidden');
+            }, 2000);
+        }
+    }
+
+    function enableNextButton(btnId) {
+        const btn = document.getElementById(btnId);
+        btn.classList.remove('opacity-50', 'pointer-events-none');
+        btn.classList.add('bg-blue-100', 'border-blue-300');
+    }
+
+    function sendDataToBackend() {
+        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
+        
+        if (googleScriptURL.includes("script.google.com")) {
+            fetch(googleScriptURL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify({
+                    studentId: currentStudentName,
+                    module: "Home Science: Tea",
+                    level: "Complete",
+                    score: 100,
+                    attempts: attemptsCount,
+                    timeTaken: 60
+                })
+            });
+        }
+    }
+</script>
+</body>
+</html>

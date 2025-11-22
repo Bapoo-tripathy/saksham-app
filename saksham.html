@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Money Math</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #F0F9FF; user-select: none; overflow: hidden; }
+        .touch-target { transition: transform 0.2s ease, opacity 0.5s ease; cursor: pointer; }
+        .touch-target:active { transform: scale(0.95); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .pop-anim { animation: pop 0.3s ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .float-anim { animation: float 3s ease-in-out infinite; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .shake-anim { animation: shake 0.4s ease-in-out; }
+        .coin { box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!-- SCREEN 1: WELCOME -->
+    <div id="screen-welcome" class="h-screen flex flex-col items-center justify-center bg-white p-4">
+        <div class="text-6xl mb-4">🐘</div>
+        <h1 class="text-4xl font-bold text-blue-600 mb-2">Saksham</h1>
+        <p class="text-xl text-gray-500 mb-8">Learning is Fun!</p>
+        
+        <!-- Name Input (Hidden if name exists in localStorage) -->
+        <input type="text" id="student-name-input" class="p-4 border-2 rounded-lg text-center text-xl mb-4 hidden" placeholder="Enter Name" />
+        <h2 id="welcome-message" class="text-2xl text-blue-800 font-bold mb-8 hidden">Welcome back!</h2>
+
+        <button onclick="startGame()" class="touch-target bg-green-500 hover:bg-green-600 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg border-b-4 border-green-700 transition-all">
+            Start Shopping ▶
+        </button>
+        <br>
+        <a href="index.html" class="mt-8 text-gray-400 font-bold">⬅ Back to Menu</a>
+    </div>
+
+    <!-- SCREEN 2: IDENTIFICATION -->
+    <div id="screen-level1" class="hidden h-screen flex flex-col bg-yellow-50">
+        <div class="p-4 flex justify-between items-center bg-white shadow-sm">
+            <span class="text-2xl">⭐ <span id="score-l1">0</span></span>
+            <button onclick="speak('Find the 10 Rupee Coin')" class="bg-blue-100 p-2 rounded-full">🔊</button>
+        </div>
+        <div class="p-8 text-center">
+            <h2 class="text-3xl font-bold text-gray-800">Find <span class="text-blue-600">10 Rupees</span></h2>
+        </div>
+        <div class="flex-1 flex items-center justify-center gap-8 p-4">
+            <div id="item-flower" onclick="handleWrongAnswer('item-flower')" class="touch-target w-32 h-32 bg-pink-200 rounded-full flex items-center justify-center text-6xl shadow-md border-4 border-pink-300">🌸</div>
+            <div onclick="handleCorrectAnswerLevel1()" class="touch-target w-32 h-32 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold text-3xl shadow-lg border-4 border-yellow-600 coin relative">
+                <div class="absolute border-2 border-yellow-700 w-24 h-24 rounded-full opacity-50"></div>
+                ₹10
+            </div>
+            <div id="item-ball" onclick="handleWrongAnswer('item-ball')" class="touch-target w-32 h-32 bg-red-200 rounded-full flex items-center justify-center text-6xl shadow-md border-4 border-red-300">⚽</div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: TRANSACTION -->
+    <div id="screen-level2" class="hidden h-screen flex flex-col bg-green-50">
+        <div class="absolute top-0 left-0 w-full h-1/2 bg-blue-200 z-0" style="border-bottom-left-radius: 50px; border-bottom-right-radius: 50px;"></div>
+        <div class="relative z-10 p-4 flex justify-between items-center">
+            <span class="text-2xl">⭐ <span id="score-l2">1</span></span>
+            <button onclick="speak('Buy the Apple for 10 Rupees')" class="bg-white p-2 rounded-full shadow">🔊</button>
+        </div>
+        <div class="relative z-10 flex-1 flex flex-col items-center justify-center mt-4">
+            <div class="text-6xl mb-2 float-anim">👨🏽‍🌾</div>
+            <div class="bg-white p-6 rounded-3xl shadow-xl border-4 border-orange-200 flex flex-col items-center">
+                <div class="text-6xl mb-2">🍎</div>
+                <div class="bg-yellow-300 text-black font-bold px-4 py-1 rounded-full text-xl border-2 border-yellow-500">₹10</div>
+            </div>
+            <div class="mt-4 text-xl text-gray-700 font-bold bg-white/80 px-4 py-1 rounded-lg">"One Apple, please!"</div>
+        </div>
+        <div class="relative z-10 bg-gray-800 p-6 rounded-t-3xl mt-auto shadow-2xl">
+            <p class="text-white text-center mb-4 text-lg opacity-80">Tap the correct coin to pay</p>
+            <div class="flex justify-center gap-6">
+                <div onclick="handleWrongPay(this)" class="touch-target w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-2xl shadow-lg border-4 border-gray-400 coin">₹1</div>
+                <div onclick="handleCorrectPay()" class="touch-target w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold text-2xl shadow-lg border-4 border-yellow-600 coin ring-4 ring-yellow-200 ring-opacity-50 animate-pulse">₹10</div>
+                <div onclick="handleWrongPay(this)" class="touch-target w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-bold text-2xl shadow-lg border-4 border-gray-400 coin">₹2</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: SUCCESS -->
+    <div id="screen-success" class="hidden h-screen flex flex-col items-center justify-center bg-purple-600 text-white p-4 text-center">
+        <div class="text-8xl mb-6 pop-anim">🏆</div>
+        <h1 class="text-5xl font-bold mb-4">Great Job!</h1>
+        <p class="text-2xl mb-8 opacity-90">You bought the Apple!</p>
+        <div class="flex gap-2 text-4xl mb-12">⭐ ⭐ ⭐</div>
+        <button onclick="location.href='index.html'" class="bg-white text-purple-600 hover:bg-gray-100 text-2xl font-bold py-4 px-12 rounded-full shadow-lg transition-all">Back to Menu 🏠</button>
+    </div>
+</div>
+
+<script>
+    let currentStudentName = "Guest";
+    let attemptsCount = 0;
+    let startTime = Date.now();
+
+    window.onload = function() {
+        const storedName = localStorage.getItem('saksham_student_name');
+        if (storedName && storedName.trim() !== "") {
+            currentStudentName = storedName;
+            document.getElementById('student-name-input').classList.add('hidden');
+            document.getElementById('welcome-message').innerText = "Welcome, " + currentStudentName + "!";
+            document.getElementById('welcome-message').classList.remove('hidden');
+        } else {
+            document.getElementById('student-name-input').classList.remove('hidden');
+        }
+    };
+
+    const synth = window.speechSynthesis;
+    function speak(text) {
+        if (synth.speaking) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.9;
+        synth.speak(u);
+    }
+
+    function startGame() {
+        const inputVal = document.getElementById('student-name-input').value;
+        if (inputVal) {
+            currentStudentName = inputVal;
+            localStorage.setItem('saksham_student_name', currentStudentName);
+        }
+        document.getElementById('screen-welcome').classList.add('hidden');
+        document.getElementById('screen-level1').classList.remove('hidden');
+        attemptsCount = 1;
+        startTime = Date.now();
+        setTimeout(() => speak("Namaste " + currentStudentName + ". Find the 10 Rupee Coin"), 500);
+    }
+
+    function handleWrongAnswer(elementId) {
+        document.getElementById(elementId).style.opacity = '0'; 
+        attemptsCount++; 
+        speak("Try again. Find the coin.");
+    }
+
+    function handleCorrectAnswerLevel1() {
+        document.querySelector('#screen-level1 .coin').classList.add('pop-anim');
+        setTimeout(() => {
+            document.getElementById('screen-level1').classList.add('hidden');
+            document.getElementById('screen-level2').classList.remove('hidden');
+            speak("Good job! Now, let's buy an apple for 10 rupees.");
+        }, 1000);
+    }
+
+    function handleWrongPay(element) {
+        element.classList.add('shake-anim');
+        attemptsCount++;
+        speak("Not enough. We need 10 Rupees.");
+        setTimeout(() => element.classList.remove('shake-anim'), 500);
+    }
+
+    function handleCorrectPay() {
+        speak("Yummy! Here is your apple.");
+        const timeTakenSec = Math.round((Date.now() - startTime) / 1000);
+        document.getElementById('screen-level2').classList.add('hidden');
+        document.getElementById('screen-success').classList.remove('hidden');
+
+        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
+        
+        if (googleScriptURL.includes("script.google.com")) {
+            fetch(googleScriptURL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify({
+                    studentId: currentStudentName,
+                    module: "Money Management",
+                    level: "Transaction",
+                    score: 100,
+                    attempts: attemptsCount,
+                    timeTaken: timeTakenSec
+                })
+            });
+        }
+    }
+</script>
+</body>
+</html>

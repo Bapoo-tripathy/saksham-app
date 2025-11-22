@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #f3f4f6; }
+        .card { transition: transform 0.2s; cursor: pointer; }
+        .card:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div class="max-w-md mx-auto h-screen bg-white shadow-2xl overflow-hidden flex flex-col">
+    
+    <!-- Top Bar -->
+    <div class="bg-blue-600 p-6 rounded-b-3xl shadow-lg z-10">
+        <div class="flex justify-between items-center text-white">
+            <div>
+                <h1 class="text-3xl font-bold">Saksham</h1>
+                <p class="opacity-80">Welcome, Student</p>
+            </div>
+            <div class="text-4xl">🐘</div>
+        </div>
+        <div class="mt-4">
+            <input type="text" id="global-name-input" placeholder="Enter Your Name Here" 
+                   class="w-full p-2 rounded text-gray-800 font-bold text-center border-4 border-yellow-400"
+                   oninput="saveName()">
+        </div>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="flex-1 p-6 overflow-y-auto">
+        <h2 class="text-gray-500 font-bold mb-4 uppercase text-sm tracking-wider">Your Classes</h2>
+        
+        <div class="grid grid-cols-1 gap-6">
+            
+            <!-- Class 1: Money -->
+            <a href="saksham.html" onclick="return validateEntry(event)" class="card block bg-blue-50 border-l-8 border-blue-500 rounded-xl p-6 shadow-sm hover:shadow-md">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-200 p-4 rounded-full text-3xl">💰</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Money Math</h3>
+                        <p class="text-sm text-gray-500">Class 1 • Buying</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Class 7: Safety -->
+            <a href="emergency.html" onclick="return validateEntry(event)" class="card block bg-red-50 border-l-8 border-red-500 rounded-xl p-6 shadow-sm hover:shadow-md">
+                <div class="flex items-center gap-4">
+                    <div class="bg-red-200 p-4 rounded-full text-3xl">🚨</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Safety First</h3>
+                        <p class="text-sm text-gray-500">Class 7 • Emergency</p>
+                    </div>
+                </div>
+            </a>
+            
+             <!-- Class 9: Vocational -->
+            <a href="data_entry.html" onclick="return validateEntry(event)" class="card block bg-gray-100 border-l-8 border-gray-600 rounded-xl p-6 shadow-sm hover:shadow-md">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gray-200 p-4 rounded-full text-3xl">⌨️</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Data Entry</h3>
+                        <p class="text-sm text-gray-500">Class 9 • Vocational</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Class 10: Tea -->
+            <a href="tea_making.html" onclick="return validateEntry(event)" class="card block bg-orange-50 border-l-8 border-orange-500 rounded-xl p-6 shadow-sm hover:shadow-md">
+                <div class="flex items-center gap-4">
+                    <div class="bg-orange-200 p-4 rounded-full text-3xl">🫖</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Home Science</h3>
+                        <p class="text-sm text-gray-500">Class 10 • Cooking</p>
+                    </div>
+                </div>
+            </a>
+
+            <button onclick="testConnection()" class="text-xs text-gray-400 mt-4 underline text-center w-full">
+                Test Cloud Connection
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bg-gray-50 p-4 border-t border-gray-200 flex justify-around text-gray-400">
+        <div class="text-blue-600 text-center"><span class="text-2xl block">🏠</span>Home</div>
+        
+        <a href="aac_board.html" class="text-center text-green-600 hover:text-green-800 hover:scale-110 transition-transform">
+            <span class="text-2xl block">🗣️</span>Talk
+        </a>
+
+        <div class="text-center"><span class="text-2xl block">📈</span>Report</div>
+    </div>
+
+</div>
+
+<script>
+    window.onload = function() {
+        const savedName = localStorage.getItem('saksham_student_name');
+        if(savedName) document.getElementById('global-name-input').value = savedName;
+    }
+
+    function saveName() {
+        const name = document.getElementById('global-name-input').value;
+        localStorage.setItem('saksham_student_name', name);
+    }
+
+    function validateEntry(e) {
+        const nameBox = document.getElementById('global-name-input');
+        const name = nameBox.value;
+
+        if(!name || name.trim() === "") {
+            e.preventDefault();
+            alert("⚠️ Please enter your name at the top first!");
+            nameBox.focus();
+            nameBox.style.borderColor = "red";
+            return false;
+        }
+        localStorage.setItem('saksham_student_name', name);
+        return true;
+    }
+    
+    function testConnection() {
+        const url = prompt("Paste your Google Script URL here:");
+        if(!url) return;
+        fetch(url, { method: "POST", mode: "no-cors", body: JSON.stringify({studentId:"TEST", score:0}) })
+        .then(() => alert("Sent! Check Sheet."))
+        .catch(err => alert("Error: " + err));
+    }
+</script>
+
+</body>
+</html>

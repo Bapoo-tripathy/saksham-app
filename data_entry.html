@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Data Entry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; user-select: none; overflow: hidden; }
+        .id-card { background: white; border: 1px solid #d1d5db; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Roboto Mono', monospace; }
+        .touch-target { cursor: pointer; transition: all 0.1s; }
+        .touch-target:active { transform: scale(0.98); background-color: #e5e7eb; }
+        .cursor { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .error-shake { animation: shake 0.3s; border-color: red !important; }
+    </style>
+</head>
+<body>
+
+<div id="app" class="relative h-screen w-full max-w-4xl mx-auto bg-gray-100 shadow-2xl flex flex-col border-x border-gray-300">
+    
+    <div class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md z-10">
+        <div class="flex items-center gap-3"><div class="bg-blue-600 p-2 rounded text-sm font-bold tracking-widest">SAKSHAM CORP</div><div class="text-gray-400 text-sm border-l border-gray-600 pl-3">Data Processing Unit</div></div>
+        <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span class="text-sm font-mono" id="student-name-display">Clerk: Guest</span></div>
+    </div>
+
+    <div id="screen-intro" class="flex-1 flex flex-col items-center justify-center p-8 bg-white">
+        <div class="text-6xl mb-4 text-gray-700">🖥️</div>
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Job: Verify ID Cards</h1>
+        <button onclick="startJob()" class="bg-blue-700 text-white text-xl font-bold py-3 px-10 rounded shadow hover:bg-blue-800 transition-colors">Start Shift</button>
+        <br><a href="index.html" class="mt-6 text-gray-400 text-sm hover:text-gray-600">Logout / Exit</a>
+    </div>
+
+    <div id="screen-matching" class="hidden flex-1 flex flex-col p-6">
+        <div class="flex justify-between items-end mb-4"><h2 class="text-xl font-bold text-gray-700">Task 1: Match Name</h2><span class="text-sm text-gray-500 font-mono">Batch: A-101</span></div>
+        <div class="flex flex-col md:flex-row gap-8 items-start h-full">
+            <div class="w-full md:w-1/3 id-card p-6 rounded-lg border-l-4 border-blue-500">
+                <div class="flex items-center gap-4 mb-6"><div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-3xl">👤</div><div><div class="text-xs text-gray-400 uppercase">Employee ID</div><div class="text-lg font-bold">8821</div></div></div>
+                <div class="space-y-4"><div><div class="text-xs text-gray-400 uppercase">Name</div><div class="text-2xl font-bold text-blue-900 bg-yellow-100 inline-block px-1">RAHUL</div></div></div>
+            </div>
+            <div class="w-full md:w-2/3 grid grid-cols-1 gap-4">
+                <div class="bg-white p-4 rounded shadow-sm text-gray-500 mb-2">Select the correct name from database:</div>
+                <button onclick="checkMatch(this, 'WRONG')" class="touch-target bg-white border border-gray-300 p-4 rounded text-left text-xl font-mono hover:border-blue-400 flex justify-between items-center group"><span>ROHIT</span></button>
+                <button onclick="checkMatch(this, 'CORRECT')" class="touch-target bg-white border border-gray-300 p-4 rounded text-left text-xl font-mono hover:border-blue-400 flex justify-between items-center group"><span>RAHUL</span></button>
+                <button onclick="checkMatch(this, 'WRONG')" class="touch-target bg-white border border-gray-300 p-4 rounded text-left text-xl font-mono hover:border-blue-400 flex justify-between items-center group"><span>RAJIV</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-typing" class="hidden flex-1 flex flex-col p-6">
+        <div class="flex justify-between items-end mb-4"><h2 class="text-xl font-bold text-gray-700">Task 2: Enter PIN Code</h2><span class="text-sm text-gray-500 font-mono">Batch: B-202</span></div>
+        <div class="flex flex-col md:flex-row gap-8 h-full">
+            <div class="w-full md:w-1/3 bg-yellow-50 border border-yellow-200 p-6 rounded shadow-sm relative">
+                <div class="absolute top-2 right-2 text-yellow-200 text-4xl">✉️</div>
+                <div class="font-mono text-sm text-gray-500 mb-4">SHIPPING LABEL</div>
+                <div class="bg-white border border-gray-300 p-2 inline-block"><span class="text-xs text-gray-400 block">PIN CODE</span><span class="text-3xl font-bold tracking-widest">751024</span></div>
+            </div>
+            <div class="w-full md:w-2/3 flex flex-col">
+                <div class="bg-black text-green-400 p-4 rounded-t-lg font-mono text-3xl tracking-[0.5em] h-20 flex items-center border-b-4 border-gray-700"><span id="input-display"></span><span class="cursor">_</span></div>
+                <div class="bg-gray-200 p-4 rounded-b-lg grid grid-cols-3 gap-2 flex-1">
+                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('1')">1</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('2')">2</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('3')">3</button>
+                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('4')">4</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('5')">5</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('6')">6</button>
+                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('7')">7</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('8')">8</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('9')">9</button>
+                    <button class="bg-red-100 text-red-600 font-bold p-4 rounded shadow" onclick="clearInput()">CLR</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('0')">0</button><button class="bg-green-600 text-white font-bold p-4 rounded shadow" onclick="submitData()">ENTER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-success" class="hidden h-full flex flex-col items-center justify-center bg-white">
+        <div class="text-6xl mb-4 text-green-500">✅</div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">Shift Complete</h1>
+        <div class="bg-gray-100 p-6 rounded-lg text-center w-64 border border-gray-300"><div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Salary Credited</div><div class="text-3xl font-bold text-gray-800">₹ 500.00</div></div>
+        <button onclick="location.href='index.html'" class="mt-12 text-blue-600 font-bold hover:underline">Back to Dashboard</button>
+    </div>
+
+</div>
+
+<script>
+    let currentInput = "";
+    const targetPin = "751024";
+    let currentStudentName = "Guest";
+    let attemptsCount = 1;
+
+    // Audio
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+        osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    window.onload = function() {
+        const storedName = localStorage.getItem('saksham_student_name');
+        if (storedName) { currentStudentName = storedName; document.getElementById('student-name-display').innerText = "Clerk: " + currentStudentName.toUpperCase(); }
+    };
+
+    function startJob() { document.getElementById('screen-intro').classList.add('hidden'); document.getElementById('screen-matching').classList.remove('hidden'); playBeep(600); }
+
+    function checkMatch(el, status) {
+        if (status === 'CORRECT') {
+            el.style.backgroundColor = "#dcfce7"; el.style.borderColor = "green"; playBeep(800);
+            setTimeout(() => { document.getElementById('screen-matching').classList.add('hidden'); document.getElementById('screen-typing').classList.remove('hidden'); }, 1000);
+        } else {
+            attemptsCount++; el.classList.add('error-shake'); playBeep(200, 'sawtooth'); setTimeout(() => el.classList.remove('error-shake'), 300);
+        }
+    }
+
+    function typeNum(num) { if (currentInput.length < 6) { currentInput += num; updateDisplay(); playBeep(1000 + (num*100)); } }
+    function clearInput() { currentInput = ""; updateDisplay(); playBeep(300); }
+    function updateDisplay() { document.getElementById('input-display').innerText = currentInput; }
+
+    function submitData() {
+        if (currentInput === targetPin) {
+            playBeep(1200);
+            document.getElementById('screen-typing').classList.add('hidden');
+            document.getElementById('screen-success').classList.remove('hidden');
+            sendDataToBackend();
+        } else {
+            attemptsCount++;
+            document.getElementById('input-display').parentElement.classList.add('error-shake');
+            playBeep(150, 'sawtooth');
+            setTimeout(() => { document.getElementById('input-display').parentElement.classList.remove('error-shake'); currentInput = ""; updateDisplay(); }, 500);
+        }
+    }
+
+    function sendDataToBackend() {
+        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
+        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
+        
+        if (googleScriptURL.includes("script.google.com")) {
+            fetch(googleScriptURL, {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify({
+                    studentId: currentStudentName,
+                    module: "Vocational: Data Entry",
+                    level: "PIN Verification",
+                    score: 100,
+                    attempts: attemptsCount,
+                    timeTaken: 90
+                })
+            });
+        }
+    }
+</script>
+</body>
+</html>

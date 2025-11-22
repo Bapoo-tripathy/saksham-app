@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Talk for Me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #f3f4f6; user-select: none; }
+        .aac-btn { transition: transform 0.1s, background-color 0.2s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .aac-btn:active { transform: scale(0.95); }
+        .cat-needs { background-color: #FEF3C7; border-color: #F59E0B; }
+        .cat-food { background-color: #D1FAE5; border-color: #10B981; }
+        .cat-feel { background-color: #DBEAFE; border-color: #3B82F6; }
+        .cat-action { background-color: #FEE2E2; border-color: #EF4444; }
+        @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="max-w-2xl mx-auto h-screen bg-white shadow-2xl flex flex-col">
+    
+    <div class="bg-white p-4 border-b-2 border-gray-200 shadow-sm z-10 flex gap-2 items-center">
+        <a href="index.html" class="text-gray-400 hover:text-gray-600 text-2xl mr-2">🏠</a>
+        <div id="sentence-strip" class="flex-1 h-20 bg-gray-100 rounded-xl border-2 border-gray-300 flex items-center px-4 gap-2 overflow-x-auto">
+            <span class="text-gray-400 text-sm italic" id="placeholder-text">Tap icons to speak...</span>
+        </div>
+        <button onclick="speakSentence()" class="bg-blue-600 text-white w-20 h-20 rounded-xl shadow-lg hover:bg-blue-700 font-bold flex flex-col items-center justify-center"><span class="text-2xl">🔊</span><span class="text-xs">Speak</span></button>
+        <button onclick="clearStrip()" class="bg-red-100 text-red-600 w-20 h-20 rounded-xl border-2 border-red-200 hover:bg-red-200 font-bold flex flex-col items-center justify-center"><span class="text-2xl">⌫</span><span class="text-xs">Clear</span></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4">
+        <h3 class="text-gray-400 font-bold uppercase text-xs tracking-widest mb-2 mt-2">I Need...</h3>
+        <div class="grid grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+            <div onclick="addWord('I want', '👇', 'cat-needs')" class="aac-btn cat-needs border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">👇</span><span class="font-bold text-gray-800">I Want</span></div>
+            <div onclick="addWord('Water', '💧', 'cat-needs')" class="aac-btn cat-needs border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">💧</span><span class="font-bold text-gray-800">Water</span></div>
+            <div onclick="addWord('Toilet', '🚽', 'cat-needs')" class="aac-btn cat-needs border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🚽</span><span class="font-bold text-gray-800">Toilet</span></div>
+            <div onclick="addWord('Help', '🤝', 'cat-needs')" class="aac-btn cat-needs border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🤝</span><span class="font-bold text-gray-800">Help</span></div>
+        </div>
+
+        <h3 class="text-gray-400 font-bold uppercase text-xs tracking-widest mb-2">Food</h3>
+        <div class="grid grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+            <div onclick="addWord('Roti', '🫓', 'cat-food')" class="aac-btn cat-food border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🫓</span><span class="font-bold text-gray-800">Roti</span></div>
+            <div onclick="addWord('Rice', '🍚', 'cat-food')" class="aac-btn cat-food border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🍚</span><span class="font-bold text-gray-800">Rice</span></div>
+            <div onclick="addWord('Dal', '🥣', 'cat-food')" class="aac-btn cat-food border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🥣</span><span class="font-bold text-gray-800">Dal</span></div>
+             <div onclick="addWord('Milk', '🥛', 'cat-food')" class="aac-btn cat-food border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🥛</span><span class="font-bold text-gray-800">Milk</span></div>
+        </div>
+
+        <h3 class="text-gray-400 font-bold uppercase text-xs tracking-widest mb-2">Feelings</h3>
+        <div class="grid grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+            <div onclick="addWord('Yes', '👍', 'cat-feel')" class="aac-btn cat-feel border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">👍</span><span class="font-bold text-gray-800">Yes</span></div>
+            <div onclick="addWord('No', '👎', 'cat-feel')" class="aac-btn cat-feel border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">👎</span><span class="font-bold text-gray-800">No</span></div>
+            <div onclick="addWord('Pain', '🤕', 'cat-feel')" class="aac-btn cat-feel border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">🤕</span><span class="font-bold text-gray-800">Pain</span></div>
+            <div onclick="addWord('Happy', '😊', 'cat-feel')" class="aac-btn cat-feel border-b-4 rounded-xl h-32"><span class="text-4xl mb-2">😊</span><span class="font-bold text-gray-800">Happy</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let sentence = [];
+    const synth = window.speechSynthesis;
+
+    function speak(text) {
+        if (synth.speaking) synth.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.rate = 0.9;
+        synth.speak(u);
+    }
+
+    function addWord(word, icon, colorClass) {
+        speak(word);
+        sentence.push(word);
+        const strip = document.getElementById('sentence-strip');
+        document.getElementById('placeholder-text').style.display = 'none';
+        const chip = document.createElement('div');
+        chip.className = `flex-shrink-0 px-3 py-1 rounded-lg border border-gray-300 flex items-center gap-2 bg-white shadow-sm`;
+        chip.style.animation = "pop 0.2s ease-out";
+        chip.innerHTML = `<span class="text-xl">${icon}</span><span class="font-bold text-gray-700">${word}</span>`;
+        strip.appendChild(chip);
+        strip.scrollTop = strip.scrollHeight;
+    }
+
+    function speakSentence() { if (sentence.length === 0) return; speak(sentence.join(" ")); }
+    function clearStrip() { sentence = []; document.getElementById('sentence-strip').innerHTML = '<span class="text-gray-400 text-sm italic" id="placeholder-text">Tap icons to speak...</span>'; }
+</script>
+</body>
+</html>
