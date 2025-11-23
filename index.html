@@ -23,7 +23,7 @@
                 <h1 class="text-3xl font-bold">Saksham</h1>
                 <p class="opacity-80">Welcome, Student</p>
             </div>
-            <div class="text-4xl">🐘</div>
+            <div class="text-4xl">ðŸ˜</div>
         </div>
         <div class="mt-4">
             <input type="text" id="global-name-input" placeholder="Enter Your Name Here" 
@@ -38,13 +38,24 @@
         
         <div class="grid grid-cols-1 gap-6">
             
+            <!-- NEW: Brain Assessment (Start Here) -->
+            <a href="assessment.html" onclick="return validateEntry(event)" class="card block bg-purple-50 border-l-8 border-purple-500 rounded-xl p-6 shadow-sm hover:shadow-md decoration-0">
+                <div class="flex items-center gap-4">
+                    <div class="bg-purple-200 p-4 rounded-full text-3xl">ðŸ§ </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Brain Check</h3>
+                        <p class="text-sm text-gray-500">Start Here â€¢ Ability Test</p>
+                    </div>
+                </div>
+            </a>
+
             <!-- Class 1: Money -->
             <a href="saksham.html" onclick="return validateEntry(event)" class="card block bg-blue-50 border-l-8 border-blue-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-blue-200 p-4 rounded-full text-3xl">💰</div>
+                    <div class="bg-blue-200 p-4 rounded-full text-3xl">ðŸ’°</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Money Math</h3>
-                        <p class="text-sm text-gray-500">Class 1 • Buying</p>
+                        <p class="text-sm text-gray-500">Class 1 â€¢ Buying</p>
                     </div>
                 </div>
             </a>
@@ -52,10 +63,10 @@
             <!-- Class 7: Safety -->
             <a href="emergency.html" onclick="return validateEntry(event)" class="card block bg-red-50 border-l-8 border-red-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-red-200 p-4 rounded-full text-3xl">🚨</div>
+                    <div class="bg-red-200 p-4 rounded-full text-3xl">ðŸš¨</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Safety First</h3>
-                        <p class="text-sm text-gray-500">Class 7 • Emergency</p>
+                        <p class="text-sm text-gray-500">Class 7 â€¢ Emergency</p>
                     </div>
                 </div>
             </a>
@@ -63,10 +74,10 @@
              <!-- Class 9: Vocational -->
             <a href="data_entry.html" onclick="return validateEntry(event)" class="card block bg-gray-100 border-l-8 border-gray-600 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-gray-200 p-4 rounded-full text-3xl">⌨️</div>
+                    <div class="bg-gray-200 p-4 rounded-full text-3xl">âŒ¨ï¸</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Data Entry</h3>
-                        <p class="text-sm text-gray-500">Class 9 • Vocational</p>
+                        <p class="text-sm text-gray-500">Class 9 â€¢ Vocational</p>
                     </div>
                 </div>
             </a>
@@ -74,10 +85,10 @@
             <!-- Class 10: Tea -->
             <a href="tea_making.html" onclick="return validateEntry(event)" class="card block bg-orange-50 border-l-8 border-orange-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-orange-200 p-4 rounded-full text-3xl">🫖</div>
+                    <div class="bg-orange-200 p-4 rounded-full text-3xl">ðŸ«–</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Home Science</h3>
-                        <p class="text-sm text-gray-500">Class 10 • Cooking</p>
+                        <p class="text-sm text-gray-500">Class 10 â€¢ Cooking</p>
                     </div>
                 </div>
             </a>
@@ -91,13 +102,13 @@
 
     <!-- Bottom Nav -->
     <div class="bg-gray-50 p-4 border-t border-gray-200 flex justify-around text-gray-400">
-        <div class="text-blue-600 text-center"><span class="text-2xl block">🏠</span>Home</div>
+        <div class="text-blue-600 text-center"><span class="text-2xl block">ðŸ </span>Home</div>
         
         <a href="aac_board.html" class="text-center text-green-600 hover:text-green-800 hover:scale-110 transition-transform">
-            <span class="text-2xl block">🗣️</span>Talk
+            <span class="text-2xl block">ðŸ—£ï¸</span>Talk
         </a>
 
-        <div class="text-center"><span class="text-2xl block">📈</span>Report</div>
+        <div class="text-center"><span class="text-2xl block">ðŸ“ˆ</span>Report</div>
     </div>
 
 </div>
@@ -119,7 +130,7 @@
 
         if(!name || name.trim() === "") {
             e.preventDefault();
-            alert("⚠️ Please enter your name at the top first!");
+            alert("âš ï¸ Please enter your name at the top first!");
             nameBox.focus();
             nameBox.style.borderColor = "red";
             return false;
