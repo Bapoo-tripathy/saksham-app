@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saksham - Brain Check</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+        body { font-family: 'Lexend', sans-serif; background-color: #f8fafc; user-select: none; }
+        .card { transition: all 0.2s; cursor: pointer; }
+        .card:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div id="app" class="max-w-2xl mx-auto h-screen bg-white shadow-2xl flex flex-col border-x-2 border-gray-200">
+
+    <!-- HEADER -->
+    <div class="bg-purple-600 p-4 text-white flex justify-between items-center">
+        <h1 class="text-xl font-bold">🧠 Ability Assessment</h1>
+        <a href="index.html" class="text-sm underline">Exit</a>
+    </div>
+
+    <!-- SCREEN 1: INTRO -->
+    <div id="screen-intro" class="flex-1 flex flex-col items-center justify-center p-8">
+        <div class="text-8xl mb-6">🧩</div>
+        <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Let's Play a Game!</h2>
+        <p class="text-gray-500 text-center mb-8">We will find out how your super-brain works.</p>
+        <button onclick="startVisualTest()" class="bg-purple-600 text-white text-xl font-bold py-3 px-10 rounded-full shadow-lg hover:bg-purple-700">
+            Start Analysis ▶
+        </button>
+    </div>
+
+    <!-- SCREEN 2: VISUAL TEST (Right Brain / Spatial) -->
+    <div id="screen-visual" class="hidden flex-1 flex flex-col p-6">
+        <div class="mb-4">
+            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">TEST 1: VISUAL</span>
+            <h2 class="text-2xl font-bold mt-2">Find the matching shadow</h2>
+        </div>
+        
+        <div class="flex-1 flex flex-col items-center justify-center gap-8">
+            <!-- Target -->
+            <div class="text-9xl animate-bounce">🦁</div>
+            
+            <!-- Options -->
+            <div class="grid grid-cols-3 gap-4 w-full">
+                <!-- Wrong -->
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center text-6xl grayscale opacity-50 hover:bg-gray-200">🐘</div>
+                <!-- Correct (Shadow of Lion) -->
+                <div onclick="recordScore('visual', 10)" class="card bg-gray-800 p-6 rounded-xl flex justify-center text-6xl grayscale brightness-0 hover:bg-black">🦁</div>
+                <!-- Wrong -->
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center text-6xl grayscale opacity-50 hover:bg-gray-200">🦒</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: LOGIC TEST (Left Brain / Linear) -->
+    <div id="screen-logic" class="hidden flex-1 flex flex-col p-6">
+        <div class="mb-4">
+            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">TEST 2: LOGIC</span>
+            <h2 class="text-2xl font-bold mt-2">Complete the Pattern</h2>
+        </div>
+        
+        <div class="flex-1 flex flex-col items-center justify-center gap-8">
+            <!-- Pattern: Apple, Banana, Apple, ? -->
+            <div class="flex gap-2 bg-gray-100 p-4 rounded-2xl">
+                <div class="text-5xl">🍎</div>
+                <div class="text-5xl">🍌</div>
+                <div class="text-5xl">🍎</div>
+                <div class="text-5xl w-12 h-12 border-2 border-dashed border-gray-400 rounded flex items-center justify-center text-gray-400">?</div>
+            </div>
+            
+            <!-- Options -->
+            <div class="grid grid-cols-2 gap-4 w-full mt-8">
+                <div onclick="recordScore('logic', 10)" class="card bg-green-50 border-2 border-green-200 p-4 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-4xl">🍌</span> 
+                </div>
+                <div onclick="recordScore('logic', 0)" class="card bg-red-50 border-2 border-red-200 p-4 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-4xl">🍇</span> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: REPORT CARD (The Analysis) -->
+    <div id="screen-result" class="hidden flex-1 flex flex-col p-6 bg-gray-50">
+        <h2 class="text-2xl font-bold text-center mb-6">🧠 Brain Profile</h2>
+        
+        <!-- Chart Visual -->
+        <div class="flex gap-4 h-40 items-end justify-center mb-8">
+            <div class="w-24 bg-blue-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white transition-all duration-1000" id="bar-visual" style="height: 10%">
+                <span class="font-bold">Visual</span>
+            </div>
+            <div class="w-24 bg-green-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white transition-all duration-1000" id="bar-logic" style="height: 10%">
+                <span class="font-bold">Logic</span>
+            </div>
+        </div>
+
+        <!-- Recommendation Engine -->
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h3 class="text-gray-500 text-sm font-bold uppercase tracking-widest mb-2">Recommendation</h3>
+            <div id="recommendation-text" class="text-xl font-bold text-gray-800">
+                Analyzing...
+            </div>
+            <p id="recommendation-sub" class="text-gray-500 mt-2 text-sm">
+                Please wait.
+            </p>
+        </div>
+
+        <button onclick="location.href='index.html'" class="mt-8 bg-gray-800 text-white font-bold py-4 rounded-xl shadow-lg">
+            Save & Go Home
+        </button>
+    </div>
+
+</div>
+
+<script>
+    let scores = {
+        visual: 0,
+        logic: 0
+    };
+
+    function startVisualTest() {
+        document.getElementById('screen-intro').classList.add('hidden');
+        document.getElementById('screen-visual').classList.remove('hidden');
+    }
+
+    function recordScore(type, points) {
+        scores[type] = points;
+        
+        if (type === 'visual') {
+            document.getElementById('screen-visual').classList.add('hidden');
+            document.getElementById('screen-logic').classList.remove('hidden');
+        } else if (type === 'logic') {
+            document.getElementById('screen-logic').classList.add('hidden');
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('screen-result').classList.remove('hidden');
+        
+        // Animate Bars (Simple visual trick)
+        setTimeout(() => {
+            document.getElementById('bar-visual').style.height = (scores.visual > 0 ? "80%" : "20%");
+            document.getElementById('bar-logic').style.height = (scores.logic > 0 ? "80%" : "20%");
+        }, 100);
+
+        // Generate Recommendation
+        const recTitle = document.getElementById('recommendation-text');
+        const recSub = document.getElementById('recommendation-sub');
+
+        if (scores.visual >= 10 && scores.logic >= 10) {
+            recTitle.innerText = "Balanced Learner 🌟";
+            recSub.innerText = "Great! You can try both Vocational Data Entry and Home Science.";
+        } else if (scores.visual >= 10) {
+            recTitle.innerText = "Visual Learner 👁️";
+            recSub.innerText = "Strong Right-Brain traits. Focus on: Home Science (Cooking) & Painting.";
+        } else if (scores.logic >= 10) {
+            recTitle.innerText = "Logical Learner 🔢";
+            recSub.innerText = "Strong Left-Brain traits. Focus on: Money Math & Data Entry.";
+        } else {
+            recTitle.innerText = "Needs Support 🤝";
+            recSub.innerText = "Let's start with the Basics: Money Math Level 1.";
+        }
+        
+        // Save to Browser Memory for the Main App to use later
+        localStorage.setItem('saksham_learning_style', recTitle.innerText);
+    }
+</script>
+
+</body>
+</html>
