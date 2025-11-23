@@ -45,12 +45,21 @@
             
             <!-- Options -->
             <div class="grid grid-cols-3 gap-4 w-full">
-                <!-- Wrong -->
-                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center text-6xl grayscale opacity-50 hover:bg-gray-200">🐘</div>
-                <!-- Correct (Shadow of Lion) -->
-                <div onclick="recordScore('visual', 10)" class="card bg-gray-800 p-6 rounded-xl flex justify-center text-6xl grayscale brightness-0 hover:bg-black">🦁</div>
-                <!-- Wrong -->
-                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center text-6xl grayscale opacity-50 hover:bg-gray-200">🦒</div>
+                <!-- Wrong: Elephant (Faded) -->
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center items-center hover:bg-gray-200">
+                    <span class="text-6xl grayscale opacity-30">🐘</span>
+                </div>
+                
+                <!-- Correct: Lion Shadow (Pitch Black Silhouette) -->
+                <div onclick="recordScore('visual', 10)" class="card bg-white border-2 border-gray-300 p-6 rounded-xl flex justify-center items-center hover:bg-blue-50 shadow-md">
+                    <!-- We apply brightness-0 ONLY to the emoji span now -->
+                    <span class="text-6xl grayscale brightness-0">🦁</span>
+                </div>
+                
+                <!-- Wrong: Giraffe (Faded) -->
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center items-center hover:bg-gray-200">
+                    <span class="text-6xl grayscale opacity-30">🦒</span>
+                </div>
             </div>
         </div>
     </div>
@@ -73,10 +82,10 @@
             
             <!-- Options -->
             <div class="grid grid-cols-2 gap-4 w-full mt-8">
-                <div onclick="recordScore('logic', 10)" class="card bg-green-50 border-2 border-green-200 p-4 rounded-xl flex items-center justify-center gap-2">
+                <div onclick="recordScore('logic', 10)" class="card bg-green-50 border-2 border-green-200 p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-100">
                     <span class="text-4xl">🍌</span> 
                 </div>
-                <div onclick="recordScore('logic', 0)" class="card bg-red-50 border-2 border-red-200 p-4 rounded-xl flex items-center justify-center gap-2">
+                <div onclick="recordScore('logic', 0)" class="card bg-red-50 border-2 border-red-200 p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-red-100">
                     <span class="text-4xl">🍇</span> 
                 </div>
             </div>
