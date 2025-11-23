@@ -15,6 +15,9 @@
         @keyframes blink { 50% { opacity: 0; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .error-shake { animation: shake 0.3s; border-color: red !important; }
+        /* Virtual Keyboard */
+        .key-btn { background: white; border: 1px solid #d1d5db; border-bottom: 3px solid #9ca3af; border-radius: 4px; padding: 10px; font-weight: bold; }
+        .key-btn:active { border-bottom-width: 1px; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -26,13 +29,16 @@
         <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span class="text-sm font-mono" id="student-name-display">Clerk: Guest</span></div>
     </div>
 
+    <!-- INTRO -->
     <div id="screen-intro" class="flex-1 flex flex-col items-center justify-center p-8 bg-white">
         <div class="text-6xl mb-4 text-gray-700">🖥️</div>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Job: Verify ID Cards</h1>
+        <p class="text-gray-500 mb-8">Tasks: Match Name -> Type PIN -> Fill Form</p>
         <button onclick="startJob()" class="bg-blue-700 text-white text-xl font-bold py-3 px-10 rounded shadow hover:bg-blue-800 transition-colors">Start Shift</button>
         <br><a href="index.html" class="mt-6 text-gray-400 text-sm hover:text-gray-600">Logout / Exit</a>
     </div>
 
+    <!-- LEVEL 1: MATCHING -->
     <div id="screen-matching" class="hidden flex-1 flex flex-col p-6">
         <div class="flex justify-between items-end mb-4"><h2 class="text-xl font-bold text-gray-700">Task 1: Match Name</h2><span class="text-sm text-gray-500 font-mono">Batch: A-101</span></div>
         <div class="flex flex-col md:flex-row gap-8 items-start h-full">
@@ -49,6 +55,7 @@
         </div>
     </div>
 
+    <!-- LEVEL 2: PIN TYPING -->
     <div id="screen-typing" class="hidden flex-1 flex flex-col p-6">
         <div class="flex justify-between items-end mb-4"><h2 class="text-xl font-bold text-gray-700">Task 2: Enter PIN Code</h2><span class="text-sm text-gray-500 font-mono">Batch: B-202</span></div>
         <div class="flex flex-col md:flex-row gap-8 h-full">
@@ -60,19 +67,62 @@
             <div class="w-full md:w-2/3 flex flex-col">
                 <div class="bg-black text-green-400 p-4 rounded-t-lg font-mono text-3xl tracking-[0.5em] h-20 flex items-center border-b-4 border-gray-700"><span id="input-display"></span><span class="cursor">_</span></div>
                 <div class="bg-gray-200 p-4 rounded-b-lg grid grid-cols-3 gap-2 flex-1">
-                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('1')">1</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('2')">2</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('3')">3</button>
-                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('4')">4</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('5')">5</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('6')">6</button>
-                    <button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('7')">7</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('8')">8</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('9')">9</button>
-                    <button class="bg-red-100 text-red-600 font-bold p-4 rounded shadow" onclick="clearInput()">CLR</button><button class="bg-white p-4 rounded shadow font-bold text-xl" onclick="typeNum('0')">0</button><button class="bg-green-600 text-white font-bold p-4 rounded shadow" onclick="submitData()">ENTER</button>
+                    <button class="key-btn" onclick="typeNum('1')">1</button><button class="key-btn" onclick="typeNum('2')">2</button><button class="key-btn" onclick="typeNum('3')">3</button>
+                    <button class="key-btn" onclick="typeNum('4')">4</button><button class="key-btn" onclick="typeNum('5')">5</button><button class="key-btn" onclick="typeNum('6')">6</button>
+                    <button class="key-btn" onclick="typeNum('7')">7</button><button class="key-btn" onclick="typeNum('8')">8</button><button class="key-btn" onclick="typeNum('9')">9</button>
+                    <button class="bg-red-100 text-red-600 font-bold p-4 rounded shadow" onclick="clearInput()">CLR</button><button class="key-btn" onclick="typeNum('0')">0</button><button class="bg-green-600 text-white font-bold p-4 rounded shadow" onclick="submitData()">ENTER</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- LEVEL 3: FORM FILLING (NEW) -->
+    <div id="screen-form" class="hidden flex-1 flex flex-col p-6">
+        <div class="flex justify-between items-end mb-4"><h2 class="text-xl font-bold text-gray-700">Task 3: Data Entry Form</h2><span class="text-sm text-gray-500 font-mono">Batch: C-303</span></div>
+        
+        <div class="flex flex-col md:flex-row gap-8 h-full">
+            <!-- Source: Passport -->
+            <div class="w-full md:w-1/3 bg-blue-900 text-white p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-2 text-xs text-blue-300 border border-blue-700">PASSPORT</div>
+                <div class="mt-8 text-xs uppercase text-blue-300">Surname</div>
+                <div class="text-2xl font-mono font-bold tracking-widest">SINGH</div>
+                <div class="mt-4 text-xs uppercase text-blue-300">Birth Year</div>
+                <div class="text-2xl font-mono font-bold tracking-widest bg-blue-800 inline-block px-2">2008</div>
+            </div>
+
+            <!-- Destination: Form -->
+            <div class="w-full md:w-2/3 bg-white p-6 rounded-lg shadow border border-gray-300">
+                <h3 class="text-gray-500 text-sm font-bold mb-6 uppercase border-b pb-2">Digital Entry System</h3>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">SURNAME</label>
+                    <div class="flex gap-2">
+                        <button onclick="fillForm('name', 'KUMAR')" class="key-btn flex-1">KUMAR</button>
+                        <button onclick="fillForm('name', 'SINGH')" class="key-btn flex-1">SINGH</button>
+                    </div>
+                    <input type="text" id="field-name" readonly class="w-full mt-2 p-3 bg-gray-100 border border-gray-300 rounded font-mono text-lg" placeholder="Select Name">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">BIRTH YEAR</label>
+                    <div class="flex gap-2">
+                        <button onclick="fillForm('year', '1999')" class="key-btn flex-1">1999</button>
+                        <button onclick="fillForm('year', '2008')" class="key-btn flex-1">2008</button>
+                    </div>
+                    <input type="text" id="field-year" readonly class="w-full mt-2 p-3 bg-gray-100 border border-gray-300 rounded font-mono text-lg" placeholder="Select Year">
+                </div>
+
+                <button onclick="validateForm()" class="w-full bg-blue-600 text-white font-bold py-3 rounded shadow hover:bg-blue-700">SUBMIT RECORD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS -->
     <div id="screen-success" class="hidden h-full flex flex-col items-center justify-center bg-white">
         <div class="text-6xl mb-4 text-green-500">✅</div>
         <h1 class="text-4xl font-bold text-gray-800 mb-2">Shift Complete</h1>
-        <div class="bg-gray-100 p-6 rounded-lg text-center w-64 border border-gray-300"><div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Salary Credited</div><div class="text-3xl font-bold text-gray-800">₹ 500.00</div></div>
+        <p class="text-gray-500">Levels 1, 2, and 3 Mastered.</p>
+        <div class="bg-gray-100 p-6 rounded-lg text-center w-64 border border-gray-300 mt-8"><div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Salary Credited</div><div class="text-3xl font-bold text-gray-800">₹ 750.00</div></div>
         <button onclick="location.href='index.html'" class="mt-12 text-blue-600 font-bold hover:underline">Back to Dashboard</button>
     </div>
 
@@ -83,6 +133,9 @@
     const targetPin = "751024";
     let currentStudentName = "Guest";
     let attemptsCount = 1;
+    
+    // Form State
+    let formData = { name: "", year: "" };
 
     // Audio
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -105,6 +158,7 @@
 
     function startJob() { document.getElementById('screen-intro').classList.add('hidden'); document.getElementById('screen-matching').classList.remove('hidden'); playBeep(600); }
 
+    // L1 Logic
     function checkMatch(el, status) {
         if (status === 'CORRECT') {
             el.style.backgroundColor = "#dcfce7"; el.style.borderColor = "green"; playBeep(800);
@@ -114,16 +168,15 @@
         }
     }
 
+    // L2 Logic
     function typeNum(num) { if (currentInput.length < 6) { currentInput += num; updateDisplay(); playBeep(1000 + (num*100)); } }
     function clearInput() { currentInput = ""; updateDisplay(); playBeep(300); }
     function updateDisplay() { document.getElementById('input-display').innerText = currentInput; }
-
     function submitData() {
         if (currentInput === targetPin) {
             playBeep(1200);
             document.getElementById('screen-typing').classList.add('hidden');
-            document.getElementById('screen-success').classList.remove('hidden');
-            sendDataToBackend();
+            document.getElementById('screen-form').classList.remove('hidden'); // Go to Level 3
         } else {
             attemptsCount++;
             document.getElementById('input-display').parentElement.classList.add('error-shake');
@@ -132,21 +185,38 @@
         }
     }
 
+    // L3 Logic (Form)
+    function fillForm(field, value) {
+        formData[field] = value;
+        document.getElementById('field-' + field).value = value;
+        playBeep(800);
+    }
+
+    function validateForm() {
+        if (formData.name === "SINGH" && formData.year === "2008") {
+            playBeep(1500);
+            document.getElementById('screen-form').classList.add('hidden');
+            document.getElementById('screen-success').classList.remove('hidden');
+            sendDataToBackend();
+        } else {
+            attemptsCount++;
+            playBeep(150, 'sawtooth');
+            alert("Error: Check Details against Passport.");
+        }
+    }
+
     function sendDataToBackend() {
-        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
-        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
-        
+        const googleScriptURL = "PASTE_YOUR_URL_HERE"; // <--- PASTE HERE
         if (googleScriptURL.includes("script.google.com")) {
             fetch(googleScriptURL, {
-                method: 'POST',
-                mode: 'no-cors', 
+                method: 'POST', mode: 'no-cors', 
                 body: JSON.stringify({
                     studentId: currentStudentName,
                     module: "Vocational: Data Entry",
-                    level: "PIN Verification",
+                    level: "L3 Form Filling",
                     score: 100,
                     attempts: attemptsCount,
-                    timeTaken: 90
+                    timeTaken: 120
                 })
             });
         }
