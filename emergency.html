@@ -3,31 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saksham - Emergency Safety</title>
+    <title>Saksham - Safety</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
         body { font-family: 'Lexend', sans-serif; background-color: #FEF2F2; user-select: none; overflow: hidden; }
         .touch-target { cursor: pointer; transition: transform 0.1s; }
         .touch-target:active { transform: scale(0.95); }
-        .keypad-btn { background: white; border-radius: 50%; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5E7EB; }
-        .keypad-btn:active { background: #E5E7EB; }
-        @keyframes flashRedBlue { 0% { background-color: #EF4444; } 50% { background-color: #3B82F6; } 100% { background-color: #EF4444; } }
-        .siren-anim { animation: flashRedBlue 0.5s infinite; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .shake { animation: shake 0.3s; }
+        
+        /* Traffic Light Styles */
+        .light { width: 80px; height: 80px; border-radius: 50%; background: #374151; margin: 10px auto; transition: background 0.3s; border: 4px solid #111; }
+        .light.red.active { background: #EF4444; box-shadow: 0 0 20px #EF4444; }
+        .light.green.active { background: #10B981; box-shadow: 0 0 20px #10B981; }
+        
+        /* Animations */
+        @keyframes walk { 0% { transform: translateX(0); } 100% { transform: translateX(200px); } }
+        .walking-anim { animation: walk 3s linear forwards; }
     </style>
 </head>
 <body>
 
 <div id="app" class="relative h-screen w-full max-w-2xl mx-auto border-x-2 border-gray-200 bg-white shadow-2xl flex flex-col">
     
+    <!-- HEADER -->
     <div class="p-4 flex justify-between items-center bg-white border-b border-gray-200 z-10">
-        <div class="bg-red-50 px-4 py-2 rounded-full border border-red-100 text-red-700 font-bold">🚨 Safety Class</div>
+        <div class="bg-red-50 px-4 py-2 rounded-full border border-red-100 text-red-700 font-bold">🚨 Safety Levels 1-2</div>
         <div class="text-gray-500 font-bold" id="student-name-display">Student</div>
     </div>
 
+    <!-- LEVEL 1: FIRE (Existing) -->
     <div id="screen-situation" class="flex-1 flex flex-col items-center justify-center p-4 bg-red-50">
+        <div class="bg-white px-3 py-1 rounded-full text-xs font-bold mb-4 shadow">Level 1: Home Safety</div>
         <div class="mb-8 relative"><div class="text-9xl">🏠</div><div class="absolute bottom-0 right-0 text-8xl animate-pulse">🔥</div></div>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Oh no! Fire!</h1>
         <button onclick="gotoHelperSelection()" class="bg-red-600 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg hover:bg-red-700 border-b-4 border-red-900">Call for Help 📞</button>
@@ -35,43 +41,60 @@
         <a href="index.html" class="mt-8 text-gray-400 font-bold text-sm">⬅ Exit Class</a>
     </div>
 
-    <div id="screen-helper" class="hidden flex-1 flex flex-col bg-white">
-        <div class="p-8 text-center"><h2 class="text-2xl font-bold text-gray-800">Who puts out fire?</h2></div>
-        <div class="flex-1 grid grid-cols-1 gap-6 p-8 items-center justify-items-center">
-            <div onclick="handleWrongHelper(this)" class="touch-target w-full max-w-xs bg-blue-50 border-4 border-blue-100 rounded-2xl p-6 flex items-center gap-6 shadow-sm"><div class="text-6xl">📮</div><div class="text-left"><span class="block text-xl font-bold text-gray-700">Postman</span></div></div>
-            <div onclick="handleCorrectHelper()" class="touch-target w-full max-w-xs bg-red-50 border-4 border-red-200 rounded-2xl p-6 flex items-center gap-6 shadow-md"><div class="text-6xl">👨‍🚒</div><div class="text-left"><span class="block text-xl font-bold text-gray-700">Firefighter</span></div></div>
+    <!-- Helper & Dialpad Screens (Hidden for brevity, logic handles them) -->
+    <div id="screen-helper" class="hidden flex-1 flex flex-col bg-white p-8 items-center">
+        <h2 class="text-2xl font-bold mb-8">Who helps with fire?</h2>
+        <div class="grid grid-cols-1 gap-6 w-full max-w-xs">
+            <div onclick="handleWrongHelper(this)" class="touch-target bg-blue-50 border-4 border-blue-100 rounded-xl p-6 flex gap-4"><span class="text-4xl">📮</span><span class="text-xl font-bold">Postman</span></div>
+            <div onclick="handleCorrectHelper()" class="touch-target bg-red-50 border-4 border-red-200 rounded-xl p-6 flex gap-4"><span class="text-4xl">👨‍🚒</span><span class="text-xl font-bold">Firefighter</span></div>
         </div>
     </div>
 
-    <div id="screen-dialpad" class="hidden flex-1 flex flex-col bg-gray-900 text-white relative">
-        <div class="h-1/3 flex flex-col items-center justify-center border-b border-gray-700 bg-gray-800">
-            <div class="text-gray-400 text-sm mb-2">Emergency Number</div>
-            <div id="phone-display" class="text-6xl font-mono tracking-widest text-green-400 h-20 flex items-center"><span class="opacity-20">---</span></div>
-            <div id="instruction-text" class="text-yellow-300 mt-4 animate-pulse">Dial 1 - 1 - 2</div>
+    <!-- LEVEL 2: TRAFFIC (NEW!) -->
+    <div id="screen-traffic" class="hidden flex-1 flex flex-col bg-gray-800 relative">
+        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-1 rounded-full text-xs font-bold">Level 2: Road Safety</div>
+        
+        <!-- Traffic Light -->
+        <div class="absolute top-16 left-1/2 transform -translate-x-1/2 bg-black p-4 rounded-2xl border-4 border-gray-600">
+            <div id="light-red" class="light red active"></div>
+            <div id="light-green" class="light green"></div>
         </div>
-        <div class="flex-1 bg-gray-100 text-gray-800 p-6">
-            <div class="grid grid-cols-3 gap-4 max-w-xs mx-auto">
-                <button class="keypad-btn" onclick="pressKey('1')">1</button><button class="keypad-btn" onclick="pressKey('2')">2</button><button class="keypad-btn" onclick="pressKey('3')">3</button>
-                <button class="keypad-btn" onclick="pressKey('4')">4</button><button class="keypad-btn" onclick="pressKey('5')">5</button><button class="keypad-btn" onclick="pressKey('6')">6</button>
-                <button class="keypad-btn" onclick="pressKey('7')">7</button><button class="keypad-btn" onclick="pressKey('8')">8</button><button class="keypad-btn" onclick="pressKey('9')">9</button>
-                <div class="keypad-btn bg-transparent border-none"></div><button class="keypad-btn" onclick="pressKey('0')">0</button><button class="keypad-btn bg-red-100 text-red-600" onclick="clearDisplay()">⌫</button>
+
+        <!-- Road -->
+        <div class="mt-auto h-48 bg-gray-600 border-t-8 border-gray-400 relative overflow-hidden w-full flex items-center">
+            <!-- Zebra Crossing -->
+            <div class="absolute w-full h-full flex justify-around">
+                <div class="w-12 h-full bg-white opacity-30 skew-x-12"></div>
+                <div class="w-12 h-full bg-white opacity-30 skew-x-12"></div>
+                <div class="w-12 h-full bg-white opacity-30 skew-x-12"></div>
+                <div class="w-12 h-full bg-white opacity-30 skew-x-12"></div>
             </div>
+            <!-- The Kid -->
+            <div id="walker" class="absolute left-10 text-8xl transition-transform z-10">🚶</div>
         </div>
-        <div id="call-btn-container" class="absolute bottom-6 w-full flex justify-center hidden"><button onclick="makeCall()" class="bg-green-500 w-20 h-20 rounded-full flex items-center justify-center shadow-2xl animate-bounce text-4xl text-white">📞</button></div>
+
+        <!-- Controls -->
+        <div class="bg-gray-900 p-6 flex justify-center">
+            <button onclick="tryToCross()" class="bg-blue-600 text-white text-2xl font-bold py-6 px-16 rounded-full shadow-lg border-b-8 border-blue-800 active:border-b-0 active:translate-y-2">
+                CROSS THE ROAD 🏃
+            </button>
+        </div>
     </div>
 
-    <div id="screen-success" class="hidden h-screen flex flex-col items-center justify-center text-white transition-colors duration-500 siren-anim">
-        <div class="text-9xl mb-4">🚒</div>
-        <h1 class="text-5xl font-bold text-center">Help is<br>Coming!</h1>
-        <button onclick="location.href='index.html'" class="mt-12 bg-white text-gray-800 font-bold py-4 px-10 rounded-full shadow-lg">Back to Menu 🏠</button>
+    <!-- SUCCESS -->
+    <div id="screen-success" class="hidden h-screen flex flex-col items-center justify-center bg-green-600 text-white">
+        <div class="text-9xl mb-4">🛡️</div>
+        <h1 class="text-5xl font-bold">Safe!</h1>
+        <p class="text-xl mt-4">You know the rules!</p>
+        <button onclick="location.href='index.html'" class="mt-12 bg-white text-green-700 font-bold py-3 px-8 rounded-full shadow-lg">Home 🏠</button>
     </div>
+
 </div>
 
 <script>
-    let currentNumber = "";
     let currentStudentName = "Guest";
-    let attemptsCount = 1;
-    const targetNumber = "112";
+    let isGreen = false;
+    let trafficInterval;
 
     window.onload = function() {
         const storedName = localStorage.getItem('saksham_student_name');
@@ -87,68 +110,72 @@
         synth.speak(u);
     }
 
+    // L1: Fire Logic
     function gotoHelperSelection() {
         document.getElementById('screen-situation').classList.add('hidden');
         document.getElementById('screen-helper').classList.remove('hidden');
         speak("Who puts out the fire?");
     }
-
     function handleWrongHelper(el) {
-        el.classList.add('shake');
-        attemptsCount++;
-        setTimeout(() => el.classList.remove('shake'), 300);
-        speak("No. The Postman brings letters.");
+        el.style.opacity = "0.5"; speak("No. Try again.");
     }
-
     function handleCorrectHelper() {
-        speak("Correct! Firefighter. Now, dial 1 1 2.");
-        document.getElementById('screen-helper').classList.add('hidden');
-        document.getElementById('screen-dialpad').classList.remove('hidden');
+        speak("Correct! Now Level 2. Traffic Rules.");
+        setTimeout(() => {
+            document.getElementById('screen-helper').classList.add('hidden');
+            document.getElementById('screen-traffic').classList.remove('hidden');
+            startTrafficCycle();
+        }, 1000);
     }
 
-    function pressKey(num) {
-        if (currentNumber.length < 3) {
-            currentNumber += num;
-            updateDisplay();
-            speak(num);
-            if (currentNumber === targetNumber) {
-                document.getElementById('instruction-text').innerText = "Good! Press Call.";
-                document.getElementById('call-btn-container').classList.remove('hidden');
-                speak("Good. Now press the green button.");
-            } else if (currentNumber.length === 3 && currentNumber !== targetNumber) {
-                attemptsCount++;
-                document.getElementById('phone-display').classList.add('shake');
-                speak("Wrong number. Try 1 1 2.");
-                setTimeout(() => { currentNumber = ""; updateDisplay(); document.getElementById('phone-display').classList.remove('shake'); }, 1000);
+    // L2: Traffic Logic
+    function startTrafficCycle() {
+        speak("Only cross when the light is Green.");
+        setInterval(() => {
+            isGreen = !isGreen;
+            if (isGreen) {
+                document.getElementById('light-red').classList.remove('active');
+                document.getElementById('light-green').classList.add('active');
+                speak("Green light.");
+            } else {
+                document.getElementById('light-green').classList.remove('active');
+                document.getElementById('light-red').classList.add('active');
+                speak("Red light. Stop.");
             }
+        }, 4000); // Change every 4 seconds
+    }
+
+    function tryToCross() {
+        if (isGreen) {
+            // Success
+            document.getElementById('walker').classList.add('walking-anim');
+            speak("Safe to cross. Walking.");
+            setTimeout(() => {
+                document.getElementById('screen-traffic').classList.add('hidden');
+                document.getElementById('screen-success').classList.remove('hidden');
+                sendDataToBackend();
+            }, 3000);
+        } else {
+            // Fail
+            speak("Stop! Red light means Danger!");
+            document.getElementById('screen-traffic').classList.add('bg-red-900');
+            setTimeout(() => document.getElementById('screen-traffic').classList.remove('bg-red-900'), 500);
+            if(navigator.vibrate) navigator.vibrate(500);
         }
     }
 
-    function clearDisplay() { currentNumber = ""; updateDisplay(); document.getElementById('call-btn-container').classList.add('hidden'); }
-    function updateDisplay() { document.getElementById('phone-display').innerText = currentNumber || "---"; document.getElementById('phone-display').classList.remove('opacity-20'); }
-
-    function makeCall() {
-        document.getElementById('screen-dialpad').classList.add('hidden');
-        document.getElementById('screen-success').classList.remove('hidden');
-        speak("Calling Emergency Services.");
-        sendDataToBackend();
-    }
-
     function sendDataToBackend() {
-        // --- PASTE YOUR GOOGLE SCRIPT URL HERE ---
-        const googleScriptURL = "https://script.google.com/macros/s/AKfycbzSHYXGfvDOQCZgKwslsmfvDMtb4Lm0qcYXWrFNEu6v7rFrK4bhgOET7UjG-QL_v8VLvA/exec"; 
-        
+        const googleScriptURL = "PASTE_YOUR_URL_HERE"; // <--- PASTE HERE
         if (googleScriptURL.includes("script.google.com")) {
             fetch(googleScriptURL, {
-                method: 'POST',
-                mode: 'no-cors', 
+                method: 'POST', mode: 'no-cors', 
                 body: JSON.stringify({
                     studentId: currentStudentName,
-                    module: "Safety: Emergency",
-                    level: "Dialing 112",
+                    module: "Safety: Advanced",
+                    level: "Traffic L2",
                     score: 100,
-                    attempts: attemptsCount,
-                    timeTaken: 45
+                    attempts: 1,
+                    timeTaken: 60
                 })
             });
         }
