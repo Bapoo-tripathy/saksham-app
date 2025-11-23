@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saksham - Brain Check</title>
+    <title>Saksham - Full Brain Check</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
         body { font-family: 'Lexend', sans-serif; background-color: #f8fafc; user-select: none; }
         .card { transition: all 0.2s; cursor: pointer; }
         .card:active { transform: scale(0.95); }
+        
+        /* Animations */
+        @keyframes fadeOut { to { opacity: 0; } }
+        .fade-away { animation: fadeOut 0.5s forwards; }
+        
+        @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .jump-anim { animation: jump 0.5s; }
     </style>
 </head>
 <body>
@@ -18,164 +25,195 @@
 
     <!-- HEADER -->
     <div class="bg-purple-600 p-4 text-white flex justify-between items-center">
-        <h1 class="text-xl font-bold">🧠 Ability Assessment</h1>
+        <h1 class="text-xl font-bold">🧠 4-Step Assessment</h1>
         <a href="index.html" class="text-sm underline">Exit</a>
     </div>
 
     <!-- SCREEN 1: INTRO -->
-    <div id="screen-intro" class="flex-1 flex flex-col items-center justify-center p-8">
+    <div id="screen-intro" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
         <div class="text-8xl mb-6">🧩</div>
-        <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Let's Play a Game!</h2>
-        <p class="text-gray-500 text-center mb-8">We will find out how your super-brain works.</p>
-        <button onclick="startVisualTest()" class="bg-purple-600 text-white text-xl font-bold py-3 px-10 rounded-full shadow-lg hover:bg-purple-700">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Let's Play 4 Games!</h2>
+        <p class="text-gray-500 mb-8">We will check Visual, Logic, Memory, and Speed.</p>
+        <button onclick="startTest('visual')" class="bg-purple-600 text-white text-xl font-bold py-3 px-10 rounded-full shadow-lg hover:bg-purple-700">
             Start Analysis ▶
         </button>
     </div>
 
-    <!-- SCREEN 2: VISUAL TEST (Right Brain / Spatial) -->
+    <!-- TEST 1: VISUAL (Shadows) -->
     <div id="screen-visual" class="hidden flex-1 flex flex-col p-6">
-        <div class="mb-4">
-            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">TEST 1: VISUAL</span>
-            <h2 class="text-2xl font-bold mt-2">Find the matching shadow</h2>
-        </div>
-        
-        <div class="flex-1 flex flex-col items-center justify-center gap-8">
-            <!-- Target -->
+        <div class="mb-4"><span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">TEST 1/4: VISUAL</span></div>
+        <h2 class="text-2xl font-bold text-center mb-8">Match the Shadow</h2>
+        <div class="flex flex-col items-center gap-8">
             <div class="text-9xl animate-bounce">🦁</div>
-            
-            <!-- Options -->
             <div class="grid grid-cols-3 gap-4 w-full">
-                <!-- Wrong: Elephant (Faded) -->
-                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center items-center hover:bg-gray-200">
-                    <span class="text-6xl grayscale opacity-30">🐘</span>
-                </div>
-                
-                <!-- Correct: Lion Shadow (Pitch Black Silhouette) -->
-                <div onclick="recordScore('visual', 10)" class="card bg-white border-2 border-gray-300 p-6 rounded-xl flex justify-center items-center hover:bg-blue-50 shadow-md">
-                    <!-- We apply brightness-0 ONLY to the emoji span now -->
-                    <span class="text-6xl grayscale brightness-0">🦁</span>
-                </div>
-                
-                <!-- Wrong: Giraffe (Faded) -->
-                <div onclick="recordScore('visual', 0)" class="card bg-gray-100 p-6 rounded-xl flex justify-center items-center hover:bg-gray-200">
-                    <span class="text-6xl grayscale opacity-30">🦒</span>
-                </div>
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-50 p-6 rounded-xl flex justify-center"><span class="text-6xl opacity-30 grayscale">🐘</span></div>
+                <div onclick="recordScore('visual', 10)" class="card bg-white border-2 border-gray-200 p-6 rounded-xl flex justify-center shadow-md"><span class="text-6xl brightness-0 grayscale">🦁</span></div>
+                <div onclick="recordScore('visual', 0)" class="card bg-gray-50 p-6 rounded-xl flex justify-center"><span class="text-6xl opacity-30 grayscale">🦒</span></div>
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 3: LOGIC TEST (Left Brain / Linear) -->
+    <!-- TEST 2: LOGIC (Patterns) -->
     <div id="screen-logic" class="hidden flex-1 flex flex-col p-6">
-        <div class="mb-4">
-            <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">TEST 2: LOGIC</span>
-            <h2 class="text-2xl font-bold mt-2">Complete the Pattern</h2>
-        </div>
-        
-        <div class="flex-1 flex flex-col items-center justify-center gap-8">
-            <!-- Pattern: Apple, Banana, Apple, ? -->
+        <div class="mb-4"><span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">TEST 2/4: LOGIC</span></div>
+        <h2 class="text-2xl font-bold text-center mb-8">Complete the Pattern</h2>
+        <div class="flex flex-col items-center gap-8">
             <div class="flex gap-2 bg-gray-100 p-4 rounded-2xl">
-                <div class="text-5xl">🍎</div>
-                <div class="text-5xl">🍌</div>
-                <div class="text-5xl">🍎</div>
+                <div class="text-5xl">🍎</div><div class="text-5xl">🍌</div><div class="text-5xl">🍎</div>
                 <div class="text-5xl w-12 h-12 border-2 border-dashed border-gray-400 rounded flex items-center justify-center text-gray-400">?</div>
             </div>
-            
-            <!-- Options -->
-            <div class="grid grid-cols-2 gap-4 w-full mt-8">
-                <div onclick="recordScore('logic', 10)" class="card bg-green-50 border-2 border-green-200 p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-100">
-                    <span class="text-4xl">🍌</span> 
-                </div>
-                <div onclick="recordScore('logic', 0)" class="card bg-red-50 border-2 border-red-200 p-4 rounded-xl flex items-center justify-center gap-2 hover:bg-red-100">
-                    <span class="text-4xl">🍇</span> 
-                </div>
+            <div class="grid grid-cols-2 gap-4 w-full mt-4">
+                <div onclick="recordScore('logic', 10)" class="card bg-green-50 border-2 border-green-200 p-4 rounded-xl flex justify-center"><span class="text-6xl">🍌</span></div>
+                <div onclick="recordScore('logic', 0)" class="card bg-red-50 border-2 border-red-200 p-4 rounded-xl flex justify-center"><span class="text-6xl">🍇</span></div>
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 4: REPORT CARD (The Analysis) -->
-    <div id="screen-result" class="hidden flex-1 flex flex-col p-6 bg-gray-50">
-        <h2 class="text-2xl font-bold text-center mb-6">🧠 Brain Profile</h2>
+    <!-- TEST 3: MEMORY (Recall) -->
+    <div id="screen-memory-prep" class="hidden flex-1 flex flex-col p-6 items-center justify-center">
+        <div class="mb-4"><span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">TEST 3/4: MEMORY</span></div>
+        <h2 class="text-2xl font-bold mb-4">Remember This!</h2>
+        <div class="bg-yellow-50 p-10 rounded-3xl border-4 border-yellow-200 mb-4">
+            <span class="text-9xl">🎸</span>
+        </div>
+        <p class="text-gray-400 animate-pulse">Memorize it...</p>
+    </div>
+
+    <div id="screen-memory-ask" class="hidden flex-1 flex flex-col p-6">
+        <div class="mb-4"><span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded">TEST 3/4: MEMORY</span></div>
+        <h2 class="text-2xl font-bold text-center mb-8">What did you see?</h2>
+        <div class="grid grid-cols-3 gap-4 w-full">
+            <div onclick="recordScore('memory', 0)" class="card bg-gray-50 p-6 rounded-xl flex justify-center"><span class="text-6xl">🎺</span></div>
+            <div onclick="recordScore('memory', 0)" class="card bg-gray-50 p-6 rounded-xl flex justify-center"><span class="text-6xl">🎻</span></div>
+            <div onclick="recordScore('memory', 10)" class="card bg-yellow-50 border-2 border-yellow-200 p-6 rounded-xl flex justify-center"><span class="text-6xl">🎸</span></div>
+        </div>
+    </div>
+
+    <!-- TEST 4: MOTOR (Speed/Reflex) -->
+    <div id="screen-motor" class="hidden flex-1 flex flex-col p-6 relative">
+        <div class="mb-4"><span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">TEST 4/4: MOTOR</span></div>
+        <h2 class="text-2xl font-bold text-center">Catch the Frog! 🐸</h2>
+        <p class="text-center text-sm text-gray-400 mb-8">Tap it 3 times fast.</p>
         
-        <!-- Chart Visual -->
-        <div class="flex gap-4 h-40 items-end justify-center mb-8">
-            <div class="w-24 bg-blue-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white transition-all duration-1000" id="bar-visual" style="height: 10%">
-                <span class="font-bold">Visual</span>
-            </div>
-            <div class="w-24 bg-green-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white transition-all duration-1000" id="bar-logic" style="height: 10%">
-                <span class="font-bold">Logic</span>
-            </div>
+        <div class="flex-1 relative bg-green-50 rounded-xl border border-green-100 overflow-hidden" id="motor-area">
+            <!-- The Frog Button (Moves around) -->
+            <button id="frog-btn" onclick="hitFrog()" class="absolute text-6xl transition-all duration-200" style="top: 40%; left: 40%;">🐸</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: RESULTS -->
+    <div id="screen-result" class="hidden flex-1 flex flex-col p-6 bg-gray-50 overflow-y-auto">
+        <h2 class="text-2xl font-bold text-center mb-4">🧠 Brain Profile</h2>
+        
+        <!-- 4-Bar Chart -->
+        <div class="flex gap-2 h-40 items-end justify-center mb-6 px-4">
+            <div class="w-1/4 bg-blue-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white text-xs transition-all duration-1000" id="bar-visual" style="height: 10%">Vis</div>
+            <div class="w-1/4 bg-green-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white text-xs transition-all duration-1000" id="bar-logic" style="height: 10%">Log</div>
+            <div class="w-1/4 bg-yellow-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white text-xs transition-all duration-1000" id="bar-memory" style="height: 10%">Mem</div>
+            <div class="w-1/4 bg-red-500 rounded-t-lg flex flex-col justify-end items-center pb-2 text-white text-xs transition-all duration-1000" id="bar-motor" style="height: 10%">Mot</div>
         </div>
 
-        <!-- Recommendation Engine -->
-        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <h3 class="text-gray-500 text-sm font-bold uppercase tracking-widest mb-2">Recommendation</h3>
-            <div id="recommendation-text" class="text-xl font-bold text-gray-800">
-                Analyzing...
-            </div>
-            <p id="recommendation-sub" class="text-gray-500 mt-2 text-sm">
-                Please wait.
-            </p>
+        <!-- Recommendation Card -->
+        <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-6">
+            <h3 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Top Recommendation</h3>
+            <div id="rec-main" class="text-xl font-bold text-purple-700 mb-1">Analyzing...</div>
+            <div id="rec-sub" class="text-sm text-gray-600">Please wait.</div>
         </div>
 
-        <button onclick="location.href='index.html'" class="mt-8 bg-gray-800 text-white font-bold py-4 rounded-xl shadow-lg">
-            Save & Go Home
+        <button onclick="location.href='index.html'" class="bg-gray-800 text-white font-bold py-4 rounded-xl shadow-lg w-full">
+            Save Profile & Exit
         </button>
     </div>
 
 </div>
 
 <script>
-    let scores = {
-        visual: 0,
-        logic: 0
-    };
+    let scores = { visual: 0, logic: 0, memory: 0, motor: 0 };
+    let frogHits = 0;
 
-    function startVisualTest() {
-        document.getElementById('screen-intro').classList.add('hidden');
-        document.getElementById('screen-visual').classList.remove('hidden');
+    function startTest(screenId) {
+        // Hide all screens
+        document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden'));
+        // Show requested screen
+        document.getElementById('screen-' + screenId).classList.remove('hidden');
+
+        // Special Setup for Memory
+        if (screenId === 'memory-prep') {
+            setTimeout(() => {
+                document.getElementById('screen-memory-prep').classList.add('hidden');
+                document.getElementById('screen-memory-ask').classList.remove('hidden');
+            }, 3000); // 3 seconds to memorize
+        }
     }
 
     function recordScore(type, points) {
         scores[type] = points;
         
-        if (type === 'visual') {
-            document.getElementById('screen-visual').classList.add('hidden');
-            document.getElementById('screen-logic').classList.remove('hidden');
-        } else if (type === 'logic') {
-            document.getElementById('screen-logic').classList.add('hidden');
+        // Progression Logic
+        if (type === 'visual') startTest('logic');
+        else if (type === 'logic') startTest('memory-prep');
+        else if (type === 'memory') startTest('motor');
+    }
+
+    // Motor Game Logic
+    function hitFrog() {
+        frogHits++;
+        const frog = document.getElementById('frog-btn');
+        
+        // Visual Feedback
+        frog.classList.add('jump-anim');
+        setTimeout(() => frog.classList.remove('jump-anim'), 200);
+
+        if (frogHits >= 3) {
+            scores.motor = 10; // Success
             showResults();
+        } else {
+            // Move Frog Randomly
+            const area = document.getElementById('motor-area');
+            const x = Math.random() * (area.clientWidth - 80);
+            const y = Math.random() * (area.clientHeight - 80);
+            frog.style.left = x + 'px';
+            frog.style.top = y + 'px';
         }
     }
 
     function showResults() {
+        document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden'));
         document.getElementById('screen-result').classList.remove('hidden');
-        
-        // Animate Bars (Simple visual trick)
+
+        // Animate Bars
         setTimeout(() => {
-            document.getElementById('bar-visual').style.height = (scores.visual > 0 ? "80%" : "20%");
-            document.getElementById('bar-logic').style.height = (scores.logic > 0 ? "80%" : "20%");
+            document.getElementById('bar-visual').style.height = scores.visual > 0 ? "80%" : "20%";
+            document.getElementById('bar-logic').style.height = scores.logic > 0 ? "80%" : "20%";
+            document.getElementById('bar-memory').style.height = scores.memory > 0 ? "80%" : "20%";
+            document.getElementById('bar-motor').style.height = scores.motor > 0 ? "80%" : "20%";
         }, 100);
 
-        // Generate Recommendation
-        const recTitle = document.getElementById('recommendation-text');
-        const recSub = document.getElementById('recommendation-sub');
+        // Intelligence Logic
+        const recMain = document.getElementById('rec-main');
+        const recSub = document.getElementById('rec-sub');
+        let strengths = [];
 
-        if (scores.visual >= 10 && scores.logic >= 10) {
-            recTitle.innerText = "Balanced Learner 🌟";
-            recSub.innerText = "Great! You can try both Vocational Data Entry and Home Science.";
-        } else if (scores.visual >= 10) {
-            recTitle.innerText = "Visual Learner 👁️";
-            recSub.innerText = "Strong Right-Brain traits. Focus on: Home Science (Cooking) & Painting.";
-        } else if (scores.logic >= 10) {
-            recTitle.innerText = "Logical Learner 🔢";
-            recSub.innerText = "Strong Left-Brain traits. Focus on: Money Math & Data Entry.";
+        if (scores.visual > 0) strengths.push("Visual");
+        if (scores.logic > 0) strengths.push("Logic");
+        if (scores.memory > 0) strengths.push("Memory");
+        if (scores.motor > 0) strengths.push("Motor");
+
+        if (strengths.length >= 3) {
+            recMain.innerText = "Super Star! 🌟";
+            recSub.innerText = "Strong in " + strengths.join(", ") + ". You are ready for Vocational Training (Data Entry).";
+        } else if (scores.visual > 0) {
+            recMain.innerText = "Visual Learner 👁️";
+            recSub.innerText = "You learn best with pictures. Start with 'Money Math' and 'Tea Making'.";
+        } else if (scores.motor > 0) {
+            recMain.innerText = "Active Learner ✋";
+            recSub.innerText = "Good hands! Try 'Tea Making' (Practical skills).";
         } else {
-            recTitle.innerText = "Needs Support 🤝";
-            recSub.innerText = "Let's start with the Basics: Money Math Level 1.";
+            recMain.innerText = "Beginner Steps 🐣";
+            recSub.innerText = "Let's start slow. Try 'Money Math' Level 1 with help.";
         }
         
-        // Save to Browser Memory for the Main App to use later
-        localStorage.setItem('saksham_learning_style', recTitle.innerText);
+        localStorage.setItem('saksham_learning_style', recMain.innerText);
     }
 </script>
 
