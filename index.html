@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saksham - Main Menu</title>
+    <title>Saksham - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
@@ -23,7 +23,8 @@
                 <h1 class="text-3xl font-bold">Saksham</h1>
                 <p class="opacity-80">Welcome, Student</p>
             </div>
-            <div class="text-4xl">🐘</div>
+            <!-- Elephant Icon Code -->
+            <div class="text-4xl">&#128024;</div>
         </div>
         <div class="mt-4">
             <input type="text" id="global-name-input" placeholder="Enter Your Name Here" 
@@ -38,10 +39,23 @@
         
         <div class="grid grid-cols-1 gap-6">
             
-            <!-- Class 1: Money -->
+            <!-- 1. Brain Assessment (This is the NEW button) -->
+            <a href="assessment.html" onclick="return validateEntry(event)" class="card block bg-purple-50 border-l-8 border-purple-500 rounded-xl p-6 shadow-sm hover:shadow-md decoration-0">
+                <div class="flex items-center gap-4">
+                    <!-- Brain Icon -->
+                    <div class="bg-purple-200 p-4 rounded-full text-3xl">&#129504;</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Brain Check</h3>
+                        <p class="text-sm text-gray-500">Start Here • Ability Test</p>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 2. Class 1: Money -->
             <a href="saksham.html" onclick="return validateEntry(event)" class="card block bg-blue-50 border-l-8 border-blue-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-blue-200 p-4 rounded-full text-3xl">💰</div>
+                    <!-- Money Bag Icon -->
+                    <div class="bg-blue-200 p-4 rounded-full text-3xl">&#128176;</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Money Math</h3>
                         <p class="text-sm text-gray-500">Class 1 • Buying</p>
@@ -49,10 +63,11 @@
                 </div>
             </a>
 
-            <!-- Class 7: Safety -->
+            <!-- 3. Class 7: Safety -->
             <a href="emergency.html" onclick="return validateEntry(event)" class="card block bg-red-50 border-l-8 border-red-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-red-200 p-4 rounded-full text-3xl">🚨</div>
+                    <!-- Siren Icon -->
+                    <div class="bg-red-200 p-4 rounded-full text-3xl">&#128680;</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Safety First</h3>
                         <p class="text-sm text-gray-500">Class 7 • Emergency</p>
@@ -60,10 +75,11 @@
                 </div>
             </a>
             
-             <!-- Class 9: Vocational -->
+             <!-- 4. Class 9: Vocational -->
             <a href="data_entry.html" onclick="return validateEntry(event)" class="card block bg-gray-100 border-l-8 border-gray-600 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-gray-200 p-4 rounded-full text-3xl">⌨️</div>
+                    <!-- Keyboard Icon -->
+                    <div class="bg-gray-200 p-4 rounded-full text-3xl">&#9000;</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Data Entry</h3>
                         <p class="text-sm text-gray-500">Class 9 • Vocational</p>
@@ -71,10 +87,11 @@
                 </div>
             </a>
 
-            <!-- Class 10: Tea -->
+            <!-- 5. Class 10: Tea -->
             <a href="tea_making.html" onclick="return validateEntry(event)" class="card block bg-orange-50 border-l-8 border-orange-500 rounded-xl p-6 shadow-sm hover:shadow-md">
                 <div class="flex items-center gap-4">
-                    <div class="bg-orange-200 p-4 rounded-full text-3xl">🫖</div>
+                    <!-- Teapot Icon -->
+                    <div class="bg-orange-200 p-4 rounded-full text-3xl">&#129686;</div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Home Science</h3>
                         <p class="text-sm text-gray-500">Class 10 • Cooking</p>
@@ -91,14 +108,16 @@
 
     <!-- Bottom Nav -->
     <div class="bg-gray-50 p-4 border-t border-gray-200 flex justify-around text-gray-400">
-        <div class="text-blue-600 text-center"><span class="text-2xl block">🏠</span>Home</div>
+        <!-- House Icon -->
+        <div class="text-blue-600 text-center"><span class="text-2xl block">&#127968;</span>Home</div>
         
-        <!-- NEW AAC BUTTON -->
         <a href="aac_board.html" class="text-center text-green-600 hover:text-green-800 hover:scale-110 transition-transform">
-            <span class="text-2xl block">🗣️</span>Talk
+            <!-- Speaking Head Icon -->
+            <span class="text-2xl block">&#128483;</span>Talk
         </a>
 
-        <div class="text-center"><span class="text-2xl block">📈</span>Report</div>
+        <!-- Chart Icon -->
+        <div class="text-center"><span class="text-2xl block">&#128200;</span>Report</div>
     </div>
 
 </div>
